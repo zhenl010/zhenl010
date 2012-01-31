@@ -22,7 +22,6 @@ ipch/
 # IDE/Compiler/Assists generated files #
 ######################
 *.opensdf
-*.vcxproj
 *.vcxproj.user
 *.vcxproj.filters
 *.sdf
