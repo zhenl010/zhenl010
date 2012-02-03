@@ -23,7 +23,6 @@ ipch/
 ######################
 *.opensdf
 *.vcxproj.user
-*.vcxproj.filters
 *.sdf
 *.suo
 *.ipch
