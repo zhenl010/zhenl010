@@ -144,7 +144,7 @@ public class AIFollow : MonoBehaviour {
 			return;
 		}
 		
-		Debug.Log("Recalculate Path");
+		// Debug.Log("Recalculate Path");
 		
 		//Start a new path from transform.positon to target.position, return the result to the function OnPathComplete
 		seeker.StartPath (transform.position,target.position,OnPathComplete);
@@ -176,14 +176,14 @@ public class AIFollow : MonoBehaviour {
 			return;
 		}
 		
-		Debug.Log(path.Length);
-		Debug.Log(pathIndex);
+		// Debug.Log(path.Length);
+		// Debug.Log(pathIndex);
 		
 		//Change target to the next waypoint if the current one is close enough
 		Vector3 currentWaypoint = path[pathIndex];
 		
-		Debug.Log((currentWaypoint - tr.position).sqrMagnitude);
-		Debug.Log(pickNextWaypointDistance*pickNextWaypointDistance);
+		// Debug.Log((currentWaypoint - tr.position).sqrMagnitude);
+		// Debug.Log(pickNextWaypointDistance*pickNextWaypointDistance);
 		
 		//currentWaypoint.y = tr.position.y;
 		while ((currentWaypoint - tr.position).sqrMagnitude < pickNextWaypointDistance*pickNextWaypointDistance) {
@@ -195,14 +195,14 @@ public class AIFollow : MonoBehaviour {
 				//Use a lower pickNextWaypointDistance for the last point. If it isn't that close, then decrement the pathIndex to the previous value and break the loop
 				if ((currentWaypoint - tr.position).sqrMagnitude < (pickNextWaypointDistance*targetReached)*(pickNextWaypointDistance*targetReached)) {
 					ReachedEndOfPath ();
-					Debug.Log("Reached End of Path");
-					Debug.Log((currentWaypoint - tr.position).sqrMagnitude);
+					// Debug.Log("Reached End of Path");
+					// Debug.Log((currentWaypoint - tr.position).sqrMagnitude);
 					
 					return;
 				} else {
 					pathIndex--;
-					Debug.Log("reduce path index");
-					Debug.Log((currentWaypoint - tr.position).sqrMagnitude);
+					// Debug.Log("reduce path index");
+					// Debug.Log((currentWaypoint - tr.position).sqrMagnitude);
 					//Break the loop, otherwise it will try to check for the last point in an infinite loop
 					break;
 				}
@@ -210,11 +210,11 @@ public class AIFollow : MonoBehaviour {
 			currentWaypoint = path[pathIndex];
 			
 			
-			Debug.Log(path[pathIndex+1]);	
+			// Debug.Log(path[pathIndex+1]);
 			//currentWaypoint.y = tr.position.y;
 		}
 		
-		Debug.Log(currentWaypoint);
+		// Debug.Log(currentWaypoint);
 		
 		Vector3 dir = currentWaypoint - tr.position;
 		
@@ -242,9 +242,9 @@ public class AIFollow : MonoBehaviour {
 		//Debug.Log(dir);
 		
 		//dir = tr.TransformDirection(dir);
-		Debug.Log(dir.magnitude);
-		Debug.Log(dir);
-		Debug.Log(dir.normalized);
+		// Debug.Log(dir.magnitude);
+		// Debug.Log(dir);
+		// Debug.Log(dir.normalized);
 		
 		Vector3 forwardDir;
 		if (dir.magnitude > 1f){
@@ -253,7 +253,7 @@ public class AIFollow : MonoBehaviour {
 			forwardDir = dir * speed;  
 		}
 
-		Debug.Log(forwardDir);
+		// Debug.Log(forwardDir);
 		
 		if (navmeshController != null) {
 			navmeshController.SimpleMove (tr.position,forwardDir);

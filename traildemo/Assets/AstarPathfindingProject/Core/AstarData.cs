@@ -194,7 +194,7 @@ namespace Pathfinding {
 				return;
 			}
 			
-			Debug.Log ("Deserializing...");
+			// Debug.Log ("Deserializing...");
 			
 			serializer = serializer.OpenDeserialize (bytes);
 			
@@ -203,7 +203,7 @@ namespace Pathfinding {
 			serializer.Close ();
 			
 			System.DateTime endTime = System.DateTime.UtcNow;
-			Debug.Log ("Deserialization complete - Process took "+((endTime-startTime).Ticks*0.0001F).ToString ("0.00")+" ms");
+			// Debug.Log ("Deserialization complete - Process took "+((endTime-startTime).Ticks*0.0001F).ToString ("0.00")+" ms");
 		}
 		
 		/** Deserializes all graphs and also user connections */
@@ -360,7 +360,7 @@ namespace Pathfinding {
 			
 			graphTypes = graphList.ToArray ();
 			
-			Debug.Log ("Found "+graphTypes.Length+" graph types");
+			// Debug.Log ("Found "+graphTypes.Length+" graph types");
 			
 		}
 		
@@ -379,7 +379,7 @@ namespace Pathfinding {
 		 * \returns The created graph 
 		 * \see CreateGraph(System.Type) */
 		public NavGraph CreateGraph (string type) {
-			Debug.Log ("Creating Graph of type '"+type+"'");
+			// Debug.Log ("Creating Graph of type '"+type+"'");
 			
 			for (int i=0;i<graphTypes.Length;i++) {
 				

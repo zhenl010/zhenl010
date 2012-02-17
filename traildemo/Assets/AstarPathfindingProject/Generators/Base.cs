@@ -210,7 +210,7 @@ namespace Pathfinding {
 		/// Use for any cleanup code such as cleaning up static variables which otherwise might prevent resources from being collected
 		/// Use by creating a function overriding this one in a graph class, but always call base.OnDestroy () in that function.</remarks>
 		public virtual void OnDestroy () {
-			Debug.Log ("Destroying Graph");
+			// Debug.Log ("Destroying Graph");
 			
 			//Clean up a refence to the node array so it can get collected even if a reference to this graph still exists somewhere
 			nodes = null;

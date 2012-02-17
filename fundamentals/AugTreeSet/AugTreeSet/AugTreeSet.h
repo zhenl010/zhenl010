@@ -26,7 +26,7 @@ public:
 
     bool Insert( KeyType );
     bool Contains( KeyType ) const;
-    KeyType NthItm( size_type n ) const;
+    bool GetNthItm( size_type, KeyType& ) const;
     bool Remove( KeyType );
     bool IsEmpty() const;
     size_type Size() const;
@@ -40,13 +40,46 @@ private:
     // helper functions
     bool IsBalanced(AugTreeNode<KeyType, size_type>*, AugTreeNode<KeyType, size_type>*) const;
     bool DoSingle(AugTreeNode<KeyType, size_type>*, AugTreeNode<KeyType, size_type>*) const;
-    bool InsertTo( KeyType, AugTreeNode<KeyType, size_type>* &node);
+    bool InsertTo(KeyType, AugTreeNode<KeyType, size_type>* &node);
+    bool RemoveFrom(KeyType, AugTreeNode<KeyType, size_type>* &node);
     // It's caller's responsibility to make sure node is not NULL
     void RebalanceAt(AugTreeNode<KeyType, size_type>* &node);
     void LeftRotateOne(AugTreeNode<KeyType, size_type>* &node);
     void LeftRotateTwo(AugTreeNode<KeyType, size_type>* &node);
     void RightRotateOne(AugTreeNode<KeyType, size_type>* &node);
     void RightRotateTwo(AugTreeNode<KeyType, size_type>* &node);
+    AugTreeNode<KeyType, size_type>* ExtractMin(AugTreeNode<KeyType, size_type>* &node)
+    {
+        if (node->leftChild_ == NULL)
+        {
+            AugTreeNode<KeyType, size_type>* minNode = node;
+            node = node->rightChild_;
+            return minNode;
+        } 
+        else
+        {
+            AugTreeNode<KeyType, size_type>* minNode = ExtractMin(node->leftChild_);
+            --node->num_;
+            RebalanceAt(node);
+            return minNode;
+        }
+    }
+    AugTreeNode<KeyType, size_type>* ExtractMax(AugTreeNode<KeyType, size_type>* &node)
+    {
+        if (node->rightChild_ == NULL)
+        {
+            AugTreeNode<KeyType, size_type>* maxNode = node;
+            node = node->leftChild_;
+            return maxNode;
+        } 
+        else
+        {
+            AugTreeNode<KeyType, size_type>* maxNode = ExtractMax(node->rightChild_);
+            --node->num_;
+            RebalanceAt(node);
+            return maxNode;
+        }
+    }
     void ClearAll(AugTreeNode<KeyType, size_type>*);
 
     // root node
@@ -70,6 +103,73 @@ template <typename KeyType>
 bool AugTreeSet<KeyType>::Insert( KeyType key )
 {
     return InsertTo(key, root_);
+}
+
+template <typename KeyType>
+bool AugTreeSet<KeyType>::Contains( KeyType key ) const
+{
+    AugTreeNode<KeyType, size_type>* node = root_;
+
+    while(node != NULL)
+    {
+        if (key < node->keyData_)
+        {
+            node = node->leftChild_;
+        }
+        else if (node->keyData_ < key)
+        {
+            node = node->rightChild_;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+template <typename KeyType>
+bool AugTreeSet<KeyType>::GetNthItm( size_type n, KeyType& key ) const
+{
+    AugTreeNode<KeyType, size_type>* node = root_;
+
+    size_type probeNum = n;
+    size_type leftNum = 0;
+    while( node != NULL && probeNum < (node->num_+1) )
+    {
+        if (node->leftChild_ == NULL)
+        {
+            leftNum = 0;
+        } 
+        else
+        {
+            leftNum = node->leftChild_->num_;
+        }
+
+        if (probeNum < (leftNum + 1))
+        {
+            node = node->leftChild_;
+        } 
+        else if ( (leftNum + 1) < probeNum )
+        {
+            node = node->rightChild_;
+            probeNum = probeNum - (leftNum + 1);
+        }
+        else
+        {
+            key = node->keyData_;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+template <typename KeyType>
+bool AugTreeSet<KeyType>::Remove( KeyType key )
+{
+    return RemoveFrom(key, root_);
 }
 
 template <typename KeyType>
@@ -135,6 +235,82 @@ bool AugTreeSet<KeyType>::InsertTo(KeyType key, AugTreeNode<KeyType, size_type>*
             return false;
         }
     }
+}
+
+template <typename KeyType>
+bool AugTreeSet<KeyType>::RemoveFrom(KeyType key, AugTreeNode<KeyType, size_type>* &node)
+{
+    if (node == NULL)
+    {
+        // nothing to do ...
+        return false;
+    } 
+    else
+    {
+        if (key < node->keyData_)
+        {
+            if (RemoveFrom(key, node->leftChild_))
+            {
+                --(node->num_);
+                RebalanceAt(node);
+                return true;
+            } 
+            else
+            {
+                return false;
+            }
+        } 
+        else if (node->keyData_ < key)
+        {
+            if (RemoveFrom(key, node->rightChild_))
+            {
+                --(node->num_);
+                RebalanceAt(node);
+                return true;
+            } 
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            // remove the current node and fix the tree
+            if (node->leftChild_ == NULL)
+            {
+                AugTreeNode<KeyType, size_type>* remNode = node;
+                node = node->rightChild_;
+                delete remNode;
+            } 
+            else if (node->rightChild_ == NULL)
+            {
+                AugTreeNode<KeyType, size_type>* remNode = node;
+                node = node->leftChild_;
+                delete remNode;
+            }
+            else
+            {
+                AugTreeNode<KeyType, size_type>* remNode = node;
+                if (node->leftChild_->num_ < node->rightChild_->num_)
+                {
+                    node = ExtractMin(node->leftChild_);
+                } 
+                else
+                {
+                    node = ExtractMax(node->rightChild_);
+                }
+                node->leftChild_ = remNode->leftChild_;
+                node->rightChild_ = remNode->rightChild_;
+                node->num_ = (--remNode->num_);
+                delete remNode;
+                RebalanceAt(node);
+            }
+            return true;
+        }
+    }
+
+    // should never reach here
+    throw("Aug Tree deletion op failed");
 }
 
 template <typename KeyType>
@@ -275,6 +451,42 @@ void AugTreeSet<KeyType>::RightRotateTwo(AugTreeNode<KeyType, size_type>* &node)
                                 + ( (nodeS==NULL) ? 0 : nodeS->num_ );
     node->num_ = 1 + node->leftChild_->num_ + node->rightChild_->num_;
 }
+
+// template <typename KeyType>
+// typename AugTreeNode<KeyType, AugTreeSet<KeyType>::size_type>* AugTreeSet<KeyType>::ExtractMin(AugTreeNode<KeyType, size_type>* &node)
+// {
+//     if (node->leftChild_ == NULL)
+//     {
+//         AugTreeNode<KeyType, size_type>* minNode = node;
+//         node = node->rightChild_;
+//         return minNode;
+//     } 
+//     else
+//     {
+//         AugTreeNode<KeyType, size_type>* minNode = ExtractMin(node->leftChild_);
+//         --node->num_;
+//         RebalanceAt(node);
+//         return minNode;
+//     }
+// }
+
+// template <typename KeyType>
+// AugTreeNode<KeyType, size_type>* AugTreeSet<KeyType>::ExtractMax(AugTreeNode<KeyType, size_type>* &node)
+// {
+//     if (node->rightChild_ == NULL)
+//     {
+//         AugTreeNode<KeyType, size_type>* maxNode = node;
+//         node = node->leftChild_;
+//         return maxNode;
+//     } 
+//     else
+//     {
+//         AugTreeNode<KeyType, size_type>* maxNode = ExtractMax(node->rightChild_);
+//         --node->num_;
+//         RebalanceAt(node);
+//         return maxNode;
+//     }
+// }
 
 template <typename KeyType>
 void AugTreeSet<KeyType>::ClearAll(AugTreeNode<KeyType, size_type>* node)

@@ -839,7 +839,7 @@ public class AstarPath : MonoBehaviour {
 	/** Clears up variables and other stuff, destroys graphs */
 	public void OnDestroy () {
 		
-		Debug.Log ("+++ Destroyed - Cleaning Up Pathfinding Data +++");
+		// Debug.Log ("+++ Destroyed - Cleaning Up Pathfinding Data +++");
 		
 		
 		//Don't accept any more path calls to this AstarPath instance. This will also cause the eventual multithreading thread to abort
@@ -858,7 +858,7 @@ public class AstarPath : MonoBehaviour {
 		//Must be set before the OnDestroy calls are made, since they might call RegisterSafeNodeUpdate, and if it set to true then the callback will never be called
 		isCalculatingPaths		 = false;
 		
-		Debug.Log ("Destroying Graphs");
+		// Debug.Log ("Destroying Graphs");
 		
 		//Clear graphs up
 		if (astarData.graphs != null) {
@@ -868,7 +868,7 @@ public class AstarPath : MonoBehaviour {
 		}
 		astarData.graphs = null;
 		
-		Debug.Log ("Returning Paths");
+		// Debug.Log ("Returning Paths");
 		
 		//Return all paths with errors
 		
@@ -906,7 +906,7 @@ public class AstarPath : MonoBehaviour {
 			pathQueueStart.callback = null;
 		}
 		
-		Debug.Log ("Cleaning up variables");
+		// Debug.Log ("Cleaning up variables");
 		
 		//Clear variables up, static variables are good to clean up, otherwise the next scene might get weird data
 		floodStack = null;
@@ -1182,7 +1182,7 @@ public class AstarPath : MonoBehaviour {
 		}
 		
 		lastScanTime = (float)(System.DateTime.UtcNow-startTime).TotalSeconds;//Time.realtimeSinceStartup-startTime;
-		Debug.Log ("Scanning - Process took "+(lastScanTime*1000).ToString ("0")+" ms to complete ");
+		// Debug.Log ("Scanning - Process took "+(lastScanTime*1000).ToString ("0")+" ms to complete ");
 		
 		//for (int i=0;i<graphs.Length;i++) {
 		//	(graphs[i] as NavMeshGraph).PostProcess ();
@@ -1330,7 +1330,7 @@ public class AstarPath : MonoBehaviour {
 		//@Edit in - System.DateTime startTime = System.DateTime.Now;
 		
 		if (pathQueueEnd == null) {
-			Debug.Log ("Initializing Path Queue...");
+			// Debug.Log ("Initializing Path Queue...");
 			
 			pathQueueEnd = p;
 			pathQueueStart = p;
@@ -1350,7 +1350,7 @@ public class AstarPath : MonoBehaviour {
 		}
 		
 			if (!isCalculatingPaths) {
-					Debug.Log ("Starting Pathfinder...");
+					// Debug.Log ("Starting Pathfinder...");
 					
 					active.StartCoroutine (CalculatePaths ());
 			}

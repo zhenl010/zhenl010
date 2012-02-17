@@ -47,6 +47,12 @@
      <Compile Include="Assets\Scripts\Ai\AiCore.js" />
      <Compile Include="Assets\Scripts\AutoFire.js" />
      <Compile Include="Assets\Scripts\BulletFire.js" />
+     <Compile Include="Assets\Scripts\Controlls\AnimationController.js" />
+     <Compile Include="Assets\Scripts\Controlls\BladeMaster.js" />
+     <Compile Include="Assets\Scripts\Controlls\CutableFruit.js" />
+     <Compile Include="Assets\Scripts\Controlls\FpaController.js" />
+     <Compile Include="Assets\Scripts\Controlls\NinjaBlade.js" />
+     <Compile Include="Assets\Scripts\Controlls\TransientTrail.js" />
      <Compile Include="Assets\Scripts\EffectSequencer.js" />
      <Compile Include="Assets\Scripts\GUI\CrossHair.js" />
      <Compile Include="Assets\Scripts\GUI\FrontEnd.js" />
@@ -67,6 +73,7 @@
      <None Include="Assets\AstarPathfindingProject\ExampleScenes\Materials\Projector Multiply.shader" />
      <None Include="Assets\AstarPathfindingProject\ExampleScenes\Materials\DiffuseAlwaysVisible.shader" />
      <None Include="Assets\AstarPathfindingProject\Editor\EditorAssets\Materials\Navmesh.shader" />
+     <None Include="Assets\Models\SpartanKing\animations.txt" />
      <None Include="Assets\AstarPathfindingProject\ExampleScenes\Materials\Projector Light.shader" />
      <None Include="Assets\AstarPathfindingProject\readme.txt" />
   </ItemGroup>

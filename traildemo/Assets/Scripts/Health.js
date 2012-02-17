@@ -44,6 +44,16 @@ function Awake () {
 	}
 }
 
+function ReactToCut(weaponType : int)
+{
+    Debug.Log("Got Damage CUT!!!");
+    Debug.Log(weaponType);
+    if(weaponType == 1)
+    {
+        OnDamage(5.0, Vector3(0,1,0));
+    }
+}
+
 function OnDamage (amount : float, fromDirection : Vector3) {
 	
 	//Debug.Log("Got Damage shark!!!");
