@@ -19,7 +19,7 @@ int main( int argc, char** argv )
     // test case in a scope
     AugTreeSet<int> augTestSet;
     std::set<int> stdTestSet;
-    int testRunLimit = INT_MAX/256;
+    int testRunLimit = INT_MAX/64;
     time_t startTime;
     time_t endTime;
     time_t timeDiff;
@@ -27,7 +27,8 @@ int main( int argc, char** argv )
     //////////////////////////////////////////////////////////////////////////
     // INSERT TESTS
     //////////////////////////////////////////////////////////////////////////
-    // Insert tests -------- AugSet
+    // Insert tests -------- std::set
+    std::cout << "Insert tests start -------- std::set" << std::endl << std::endl;
     startTime = time(NULL);
     for (int i=0; i<testRunLimit; ++i)
     {
@@ -35,9 +36,10 @@ int main( int argc, char** argv )
     }
     endTime = time(NULL);
     timeDiff = (endTime - startTime);
-    std::cout << "std lib set insert done used time:   " << timeDiff << std::endl;
+    std::cout << "std lib set insert done used time:   " << timeDiff << std::endl << std::endl;
 
     // Insert tests -------- AugSet
+    std::cout << "Insert tests start -------- AugSet" << std::endl << std::endl;
     startTime = time(NULL);
     for (int i=0; i<testRunLimit; ++i)
     {
@@ -45,7 +47,42 @@ int main( int argc, char** argv )
     }
     endTime = time(NULL);
     timeDiff = (endTime - startTime);
-    std::cout << "AugSet insert done used time:   " << timeDiff << std::endl;
+    std::cout << "AugSet insert done used time:   " << timeDiff << std::endl << std::endl;
+
+    //////////////////////////////////////////////////////////////////////////
+    // SEARCH TESTS
+    //////////////////////////////////////////////////////////////////////////
+    // -------- std::set
+    std::cout << "SEARCH tests start -------- std::set" << std::endl << std::endl;
+    std::set<int>::iterator itr;
+    startTime = time(NULL);
+    for (int i=0; i<testRunLimit; ++i)
+    {
+        itr = stdTestSet.find(rand());
+        if (itr == stdTestSet.end())
+        {
+            std::cout << "CANT FIND --" << std::endl;
+        }
+    }
+    endTime = time(NULL);
+    timeDiff = (endTime - startTime);
+    std::cout << "std lib set search done used time:   " << timeDiff << std::endl << std::endl;
+
+    //  -------- AugSet
+    std::cout << "Search tests start -------- AugSet" << std::endl << std::endl;
+    bool itmFound = true;
+    startTime = time(NULL);
+    for (int i=0; i<testRunLimit; ++i)
+    {
+        itmFound = augTestSet.Contains(rand());
+        if (itmFound == false)
+        {
+            std::cout << "CANT FIND --" << std::endl;
+        }
+    }
+    endTime = time(NULL);
+    timeDiff = (endTime - startTime);
+    std::cout << "AugSet search done used time:   " << timeDiff << std::endl << std::endl;
 
     //////////////////////////////////////////////////////////////////////////
     // press_enter_to_close();
