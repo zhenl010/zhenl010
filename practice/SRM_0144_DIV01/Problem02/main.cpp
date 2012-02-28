@@ -22,7 +22,7 @@ public:
         char nameCh = '\0';
         for ( strStream >> noskipws >> nameCh; nameCh != ':'; strStream >> noskipws >> nameCh)
         {
-            name_ += nameCh;            
+            name_ += nameCh;
         }
         strStream >> skipws >> choices_;
         strStream >> skipws >> blanks_;
