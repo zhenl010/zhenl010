@@ -6,7 +6,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
-#include <stack>
+#include <list>
 
 namespace maximal_rectangle
 {
@@ -117,7 +117,7 @@ bool Histogram<T>::WriteToFile(const std::string& filename) const
 template<typename T>
 T Histogram<T>::Area(typename std::vector<T>::size_type idx_small, typename std::vector<T>::size_type idx_large, T height)
 {
-    return height * (idx_large-idx_small+1);
+    return height * static_cast<T>(idx_large-idx_small+1);
 }
 
 template<typename T>
@@ -139,32 +139,24 @@ void Histogram<T>::UpdateMaximalRect()
     typedef std::vector<T>::size_type IndexType;
     struct RectCorner { IndexType index; T h; };
 
-    T max_area = static_cast<T> (0);
-    stack<RectCorner> corners;
+    list<RectCorner> corners;
     for (vector<T>::size_type idx=0; idx<hights_.size(); ++idx)
     {
         RectCorner new_corner;
         new_corner.index = idx;
         new_corner.h = hights_[idx];
 
-        if (corners.empty())
+        while (corners.empty() != true && new_corner.h < corners.front().h)
         {
-            corners.push(new_corner);
+            UpdateArea(corners.front().index, idx-1, corners.front().h);
+            new_corner.index = corners.front().index;
+            corners.pop_front();
         }
-        else
-        {
-            while (corners.empty() != true && new_corner.h < corners.top().h)
-            {
-                UpdateArea(corners.top().index, new_corner.index-1, corners.top().h);
-                new_corner.index = corners.top().index;
-                corners.pop();
-            }
 
-            if (corners.empty() || corners.top().h < new_corner.h)
-            {
-                corners.push(new_corner);
-            } 
-        }
+        if (corners.empty() || corners.front().h < new_corner.h)
+        {
+            corners.push_front(new_corner);
+        } 
     }
 
     // finish processing
@@ -173,8 +165,8 @@ void Histogram<T>::UpdateMaximalRect()
     last_corner.h = hights_[last_corner.index];
     while (corners.empty() != true)
     {
-        UpdateArea(corners.top().index, last_corner.index, corners.top().h);
-        corners.pop();
+        UpdateArea(corners.front().index, last_corner.index, corners.front().h);
+        corners.pop_front();
     }
 }
 

@@ -1,0 +1,4 @@
+Histogram with maximal rect of size: 20
+Maximal Rectangle from 1 to 5
+Maximal Rectangle height: 4
+3, 5, 4, 7, 6, 5, 2
