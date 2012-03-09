@@ -1,0 +1,4 @@
+Histogram with maximal rect of size: -9.25596e+061
+Maximal Rectangle from 3435973836 to 3435973836
+Maximal Rectangle height: -9.25596e+061
+7 2 1 4 5 1 3 3
