@@ -1,4 +1,0 @@
-ABCBDAB
-BDCABA
-The longest common subsequence is: 
-BCBA
