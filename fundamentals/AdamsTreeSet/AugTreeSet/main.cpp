@@ -3,15 +3,6 @@
 #include <set>
 #include "AugTreeSet.h"
 
-// Helper function to keep the console window open
-void press_enter_to_close()
-{
-    do
-    {
-        std::cout << "Press the ENTER key" << std::endl;
-    } while(std::cin.get() != '\n');
-}
-
 int main( int argc, char** argv )
 {
     using namespace augment_data_structure;
@@ -27,16 +18,6 @@ int main( int argc, char** argv )
     //////////////////////////////////////////////////////////////////////////
     // INSERT TESTS
     //////////////////////////////////////////////////////////////////////////
-    // Insert tests -------- std::set
-    std::cout << "Insert tests start -------- std::set" << std::endl << std::endl;
-    startTime = time(NULL);
-    for (int i=0; i<testRunLimit; ++i)
-    {
-        stdTestSet.insert(i);
-    }
-    endTime = time(NULL);
-    timeDiff = (endTime - startTime);
-    std::cout << "std lib set insert done used time:   " << timeDiff << std::endl << std::endl;
 
     // Insert tests -------- AugSet
     std::cout << "Insert tests start -------- AugSet" << std::endl << std::endl;
@@ -49,9 +30,21 @@ int main( int argc, char** argv )
     timeDiff = (endTime - startTime);
     std::cout << "AugSet insert done used time:   " << timeDiff << std::endl << std::endl;
 
+    // Insert tests -------- std::set
+    std::cout << "Insert tests start -------- std::set" << std::endl << std::endl;
+    startTime = time(NULL);
+    for (int i=0; i<testRunLimit; ++i)
+    {
+        stdTestSet.insert(i);
+    }
+    endTime = time(NULL);
+    timeDiff = (endTime - startTime);
+    std::cout << "std lib set insert done used time:   " << timeDiff << std::endl << std::endl;
+
     //////////////////////////////////////////////////////////////////////////
     // SEARCH TESTS
     //////////////////////////////////////////////////////////////////////////
+
     // -------- std::set
     std::cout << "SEARCH tests start -------- std::set" << std::endl << std::endl;
     std::set<int>::iterator itr;
@@ -84,9 +77,7 @@ int main( int argc, char** argv )
     timeDiff = (endTime - startTime);
     std::cout << "AugSet search done used time:   " << timeDiff << std::endl << std::endl;
 
-    //////////////////////////////////////////////////////////////////////////
-    // press_enter_to_close();
-    //////////////////////////////////////////////////////////////////////////
+    std::cout << "FINISHING TEST -----------------------------" << std::endl << std::endl;
 
     return 0;
 }
