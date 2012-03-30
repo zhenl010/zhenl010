@@ -18,7 +18,7 @@ public:
     typedef T& reference;
     typedef typename SinglelyLinkedList<T>::Node* NodePtr;
 
-    SinglelyLinkedListIterator(SinglelyLinkedList<T>& container, NodePtr node);
+    SinglelyLinkedListIterator(container& mycontainer, NodePtr node);
     const container& container_ref() const { return container_; }
     const NodePtr position() const { return curr_node_; }
 
@@ -34,8 +34,8 @@ private:
 };
 
 template <typename T>
-SinglelyLinkedListIterator<T>::SinglelyLinkedListIterator(SinglelyLinkedList<T>& container, NodePtr node)
-: container_(container), curr_node_(node)
+SinglelyLinkedListIterator<T>::SinglelyLinkedListIterator(container& mycontainer, NodePtr node)
+: container_(mycontainer), curr_node_(node)
 {
 }
 

@@ -18,24 +18,9 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hanoi_tower_slow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="hanoi_tower_limited.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="hanoi_tower_fast.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="hanoi_tower_slow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="hanoi_tower_limited.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="hanoi_tower_fast.h">
+    <ClInclude Include="heaped_median_window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

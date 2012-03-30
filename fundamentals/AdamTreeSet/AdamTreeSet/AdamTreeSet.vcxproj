@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{C6F9F7A7-4DA9-4C6D-8CA4-C6F06F680746}</ProjectGuid>
-    <RootNamespace>HanoiTower</RootNamespace>
+    <ProjectGuid>{0341B900-9139-4943-853C-1566AD4ABCDF}</ProjectGuid>
+    <RootNamespace>AdamTreeSet</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -107,15 +107,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="hanoi_tower_fast.cpp" />
-    <ClCompile Include="hanoi_tower_limited.cpp" />
-    <ClCompile Include="hanoi_tower_slow.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClInclude Include="adam_tree_node.h" />
+    <ClInclude Include="adam_tree_set.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="hanoi_tower_fast.h" />
-    <ClInclude Include="hanoi_tower_limited.h" />
-    <ClInclude Include="hanoi_tower_slow.h" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -18,24 +18,21 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hanoi_tower_slow.cpp">
+    <ClCompile Include="directed_graph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hanoi_tower_limited.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="hanoi_tower_fast.cpp">
+    <ClCompile Include="vertex_iterator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="hanoi_tower_slow.h">
+    <ClInclude Include="vertex_iterator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hanoi_tower_limited.h">
+    <ClInclude Include="directed_graph.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hanoi_tower_fast.h">
+    <ClInclude Include="rand_height_generator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

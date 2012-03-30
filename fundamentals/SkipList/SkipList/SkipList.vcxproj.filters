@@ -18,24 +18,21 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hanoi_tower_slow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="hanoi_tower_limited.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="hanoi_tower_fast.cpp">
+    <ClCompile Include="skip_list_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="hanoi_tower_slow.h">
+    <ClInclude Include="rand_height_generator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hanoi_tower_limited.h">
+    <ClInclude Include="skip_list_set.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hanoi_tower_fast.h">
+    <ClInclude Include="skip_list_set_iterator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="skip_list_test.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
