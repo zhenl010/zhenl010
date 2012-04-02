@@ -113,7 +113,6 @@
   <ItemGroup>
     <ClInclude Include="rand_height_generator.h" />
     <ClInclude Include="skip_list_set.h" />
-    <ClInclude Include="skip_list_set_iterator.hpp" />
     <ClInclude Include="skip_list_test.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

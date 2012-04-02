@@ -3,7 +3,6 @@
 #include <set>
 #include <algorithm>
 #include "skip_list_set.h"
-#include "skip_list_set_iterator.hpp"
 
 void SkipListTester::StartTest()
 {

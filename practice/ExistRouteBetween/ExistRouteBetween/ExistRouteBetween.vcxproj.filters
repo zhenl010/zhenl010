@@ -35,5 +35,8 @@
     <ClInclude Include="rand_height_generator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="skip_list_set.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

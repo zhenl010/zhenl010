@@ -9,13 +9,14 @@
 #include <vector>
 #include "directed_graph.h"
 #include "rand_height_generator.h"
+#include <set>
 
 int main(int argc, char** argv)
 {
     using namespace std;
     using namespace augment_data_structure;
 
-    int height = VertexHeight<10, 4>::Instance().RandomHeight();
+    int height = RandHeight<10, 4>::Instance().RandomHeight();
 
     const int test_num = INT_MAX;
     const int vertex_num = 5;
@@ -30,11 +31,13 @@ int main(int argc, char** argv)
             test_graph.NewVertex();
         }
 
-        for (int i=1; i<vertex_num-2; ++i)
+        for (int i=2; i<vertex_num-2; ++i)
         {
             test_graph.AddEdge(i+1, i+2, 1);
-            test_graph.AddEdge(i+1, i-2, 1);
+            test_graph.AddEdge(i+1, i-1, 1);
         }
+
+        test_graph.RemoveEdge(1, 3);
 
         for (int i=0; i<vertex_num; ++i)
         {

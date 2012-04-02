@@ -1,7 +1,6 @@
 #include <iostream>
 #include "rand_height_generator.h"
 #include "skip_list_set.h"
-#include "skip_list_set_iterator.hpp"
 #include "skip_list_test.h"
 
 int main(int argc, char** argv)
@@ -13,31 +12,45 @@ int main(int argc, char** argv)
 
     cout << "a random height returns: " << height << endl;
 
-    SkipListTester pre_tester;
-    pre_tester.StartTest();
-
-    int test_num = INT_MAX;
-    int element_num =  16;
-    for (int j=0; j<test_num; ++j)
+    const int TEST_NUM = 7;
+    const int ELEMENT_NUM =  16;
+    for (int j=0; j<TEST_NUM; ++j)
     {
-        SkipListSet<int, 10> test_int_set;
-        for (int i=0; i<element_num; ++i)
+        SkipListSet<int*, 10> ptr_set;
+        int number_array[ELEMENT_NUM];
+        for (int i=0; i<ELEMENT_NUM; ++i)
         {
-            test_int_set.Insert(i);
+            number_array[i] = i;
+            ptr_set.Insert(&number_array[i]);
         }
-        for (int i=0; i<element_num; ++i)
+
+        for (int i=0; i<ELEMENT_NUM; ++i)
         {
-            int* valptr = test_int_set.Find(i);
-            if ( !(valptr!=nullptr && (*valptr)==i) )
+            int** valptr = ptr_set.Find( &(number_array[i]) );
+            if ( !(valptr!=nullptr && (*valptr)==(&(number_array[i]))) )
             {
                 cout << "skip list find error!!!!" << endl;
             }
         }
-        test_int_set.Remove(rand()%element_num);
+        ptr_set.Remove( &(number_array[rand()%ELEMENT_NUM]) );
 
-        // SkipListSet<int, 10>::iterator itor;
-        // itor;
+        SkipListSet<int*, 10>::iterator skip_itor = ptr_set.begin();
+
+        for (int i=0; i<ELEMENT_NUM-1; ++i)
+        {
+            int irand = rand();
+
+            int* skip_value = *skip_itor++;
+            if ( (*skip_value)<0 || ELEMENT_NUM<(*skip_value))
+            {
+                cout << "Data Not match!!!!" << endl;
+            }
+        }
     }
+
+
+    SkipListTester pre_tester;
+    pre_tester.StartTest();
 
     return 0;
 }

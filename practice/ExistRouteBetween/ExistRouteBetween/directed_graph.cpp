@@ -1,7 +1,7 @@
 #include "directed_graph.h"
-#include <limits>
 #include <cassert>
-#include "rand_height_generator.h"
+#include <limits>
+#include "skip_list_set.h"
 
 namespace augment_data_structure
 {
@@ -13,8 +13,6 @@ namespace // unnamed namespace
 
 const int VERTEX_LIST_HEIGHT = 10;
 const int VERTEX_LIST_PINV = 4;
-const int NEIGHBOR_LIST_HEIGHT = 4;
-const int NEIGHBOR_LIST_PINV = 4;
 
 //////////////////////////////////////////////////////////////////////////
 }
@@ -24,7 +22,6 @@ DirectedGraph::DirectedGraph()
 {
     vert_head_ = CreateVertex(VERTEX_LIST_HEIGHT);
     vert_fix_ = new Vertex*[VERTEX_LIST_HEIGHT];
-    nbor_fix_ = new EdgeRef*[NEIGHBOR_LIST_HEIGHT];
 }
 
 DirectedGraph::~DirectedGraph()
@@ -38,7 +35,6 @@ DirectedGraph::~DirectedGraph()
     }
     ReleaseContent(vert_head_);
     delete [] vert_fix_;
-    delete [] nbor_fix_;
 
     Edge* curredge =  edge_head_;
     while (curredge != nullptr)
@@ -51,15 +47,35 @@ DirectedGraph::~DirectedGraph()
 
 DirectedGraph::UniqueId DirectedGraph::NewVertex() // returns the new vertex's id
 {
-    int height = VertexHeight<VERTEX_LIST_HEIGHT, VERTEX_LIST_PINV>::Instance().RandomHeight();
+    int height = RandHeight<VERTEX_LIST_HEIGHT, VERTEX_LIST_PINV>::Instance().RandomHeight();
     Vertex* new_vertex = CreateVertex(height);
     InsertVetexOrDie(new_vertex);
 
     return new_vertex->uniqueid;
 }
 
+bool DirectedGraph::AddEdge(UniqueId fromid, UniqueId destid, LengthType length)
+{
+    Vertex* vert_from = FindById(fromid);
+    Vertex* vert_dest = FindById(destid);
+    if (vert_from==nullptr || vert_dest==nullptr)
+    {
+        return false;
+    }
+
+    Edge* new_edge = CreateEdge(vert_from, vert_dest, length);
+    // add new edge to graph edge list
+    PushFrontEdge(new_edge);
+    // add pointers the edge's end vertices's nbor-list
+    vert_from->outgoing_edges.Insert(new_edge);
+    vert_dest->incoming_edges.Insert(new_edge);
+    return true;
+}
+
 bool DirectedGraph::RemoveVertex(UniqueId vid)
 {
+    using namespace augment_data_structure;
+
     Vertex* prev_vert = vert_head_;
     for (int idx = curr_height_-1; idx>=0; --idx)
     {
@@ -86,6 +102,19 @@ bool DirectedGraph::RemoveVertex(UniqueId vid)
             --curr_height_;
         }
 
+        for (IncomingEdgeContainer::iterator itor = (curr_vert->incoming_edges).begin();
+            itor != (curr_vert->incoming_edges).end(); ++itor)
+        {
+            (*itor)->from->outgoing_edges.Remove(*itor);
+            RemoveEdge(*itor);
+        }
+        for (OutgoingEdgeContainer::iterator itor = (curr_vert->outgoing_edges).begin();
+            itor != (curr_vert->outgoing_edges).end(); ++itor)
+        {
+            (*itor)->dest->incoming_edges.Remove(*itor);
+            RemoveEdge(*itor);
+        }
+
         ReleaseContent(curr_vert);
 
         return true;
@@ -96,15 +125,21 @@ bool DirectedGraph::RemoveVertex(UniqueId vid)
     }
 }
 
-void DirectedGraph::AddEdge(UniqueId fromid, UniqueId destid, LengthType length)
+bool DirectedGraph::RemoveEdge(UniqueId fromid, UniqueId destid)
 {
     Vertex* vert_from = FindById(fromid);
     Vertex* vert_dest = FindById(destid);
-    Edge* new_edge = CreateEdge(vert_from, vert_dest, length);
-    // add new edge to graph edge list
-    PushFrontGraphEdges(new_edge);
-    // add pointer to new edge to the edge's from vertex
-    PushEdgerefToVertexFrom(new_edge);
+    if (vert_from==nullptr || vert_dest==nullptr)
+    {
+        return false;
+    }
+
+    // use a dummy edge to track
+    Edge* dummy_edge = CreateEdge(vert_from, vert_dest, -1);
+    vert_from->outgoing_edges.Remove(dummy_edge);
+    vert_dest->incoming_edges.Remove(dummy_edge);
+    ReleaseContent(dummy_edge);
+    return true;
 }
 
 DirectedGraph::Vertex* DirectedGraph::CreateVertex(int height)
@@ -114,7 +149,6 @@ DirectedGraph::Vertex* DirectedGraph::CreateVertex(int height)
     Vertex* new_vertex = new Vertex;
     new_vertex->next_verts = new Vertex* [height];
     new_vertex->uniqueid = NextId(); // assign unique Id
-    new_vertex->edgeref_head = nullptr;
     new_vertex->vert_state = nullptr;
     new_vertex->height = height;
 
@@ -129,14 +163,6 @@ DirectedGraph::Vertex* DirectedGraph::CreateVertex(int height)
 // delete but does not release vert_state and outedges
 void DirectedGraph::ReleaseContent(Vertex* vert)
 {
-//     EdgeRef* edgeref =  vert->edgeref_head;
-//     while (edgeref != nullptr)
-//     {
-//         EdgeRef* nextref = edgeref->next;
-//         delete edgeref;
-//         edgeref = nextref;
-//     }
-
     delete [] vert->next_verts;
     delete vert;
 }
@@ -211,7 +237,7 @@ void DirectedGraph::ReleaseContent(Edge* edge)
     delete edge;
 }
 
-void DirectedGraph::PushFrontGraphEdges(Edge* edge)
+void DirectedGraph::PushFrontEdge(Edge* edge)
 {
     if (edge_head_ == nullptr)
     {
@@ -225,23 +251,17 @@ void DirectedGraph::PushFrontGraphEdges(Edge* edge)
     }
 }
 
-void DirectedGraph::PushEdgerefToVertexFrom(Edge* new_edge)
+void DirectedGraph::RemoveEdge(Edge* edge)
 {
-    Vertex* vert_from = new_edge->from;
-
-    // add to vert_from's out_edge list
-    EdgeRef* edgeref = new EdgeRef;
-    edgeref->edge = new_edge;
-    edgeref->next = nullptr;
-    if (vert_from->edgeref_head == nullptr)
+    if (edge == edge_head_)
     {
-        vert_from->edgeref_head = edgeref;
+        edge_head_ = edge->next_edge;
     } 
     else
     {
-        edgeref->next = vert_from->edgeref_head;
-        vert_from->edgeref_head = edgeref;
+        edge->prev_edge->next_edge = edge->next_edge;
     }
+    ReleaseContent(edge);
 }
 
 //////////////////////////////////////////////////////////////////////////

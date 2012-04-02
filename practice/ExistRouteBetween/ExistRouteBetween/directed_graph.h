@@ -6,6 +6,8 @@
 #ifndef BASIC_GRAPH_H_H
 #define BASIC_GRAPH_H_H
 
+#include "skip_list_set.h"
+
 namespace augment_data_structure
 {
 //////////////////////////////////////////////////////////////////////////
@@ -15,13 +17,15 @@ class DirectedGraph
 public:
     typedef unsigned int UniqueId;
     typedef int LengthType;
+    static const int NEIGHBOR_LIST_HEIGHT = 6;
 
     DirectedGraph();
     ~DirectedGraph();
 
     UniqueId NewVertex(); // returns the new vertex's id
+    bool AddEdge(UniqueId, UniqueId, LengthType);
     bool RemoveVertex(UniqueId); // fail when the id does not exist
-    void AddEdge(UniqueId, UniqueId, LengthType);
+    bool RemoveEdge(UniqueId, UniqueId);
 
     // allow access via iterator classes
     friend class VertexIterator;
@@ -48,16 +52,29 @@ private:
         Edge* next_edge;
     };
 
-    struct EdgeRef
+    struct CompareByFromId
     {
-        Edge* edge;
-        EdgeRef** next_edges;
+        bool operator()(Edge* lhs, Edge* rhs) const
+        {
+            return(lhs->from->uniqueid < rhs->from->uniqueid);
+        }
     };
+    typedef SkipListSet<Edge*, NEIGHBOR_LIST_HEIGHT, CompareByFromId> IncomingEdgeContainer;
+
+    struct CompareByDestId
+    {
+        bool operator()(Edge* lhs, Edge* rhs) const
+        {
+            return(lhs->dest->uniqueid < rhs->dest->uniqueid);
+        }
+    };
+    typedef SkipListSet<Edge*, NEIGHBOR_LIST_HEIGHT, CompareByDestId> OutgoingEdgeContainer;
 
     struct Vertex
     {
         UniqueId uniqueid; // identity used to communicate with the world
-        EdgeRef* edgeref_head; // edges starting from this vertex
+        IncomingEdgeContainer incoming_edges;
+        OutgoingEdgeContainer outgoing_edges;
         void* vert_state; // used to mark the vertex to different states
         /// listed implementation
         int height;
@@ -75,8 +92,8 @@ private:
     // edge helper functions:
     Edge* CreateEdge(Vertex*, Vertex*, LengthType);
     void ReleaseContent(Edge*);
-    void PushFrontGraphEdges(Edge*);
-    void PushEdgerefToVertexFrom(Edge*);
+    void PushFrontEdge(Edge*);
+    void RemoveEdge(Edge*);
 
     // private data:
     UniqueId nextid_;
@@ -84,7 +101,6 @@ private:
     Edge* edge_head_;
     Vertex* vert_head_; // sentinel
     Vertex** vert_fix_; // update finger
-    EdgeRef** nbor_fix_;
 };
 
 //////////////////////////////////////////////////////////////////////////

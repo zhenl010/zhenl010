@@ -5,11 +5,11 @@ namespace augment_data_structure
 {
 //////////////////////////////////////////////////////////////////////////
 
-template<int VERTEX_LIST_HEIGHT, int VERTEX_LIST_PINV>
-class VertexHeight
+template<int MAX_HEIGHT, int LIST_PINV>
+class RandHeight
 {
 public:
-    static VertexHeight& Instance();
+    static RandHeight& Instance();
 
     int RandomHeight(); // in range [1, MAX_HEIGHT] inclusive
 
@@ -21,12 +21,12 @@ protected:
     static const int LCG_CONST_R = LCG_PRIME_M % LCG_CONST_A;
 
 private:
-    VertexHeight();
-    ~VertexHeight();
+    RandHeight();
+    ~RandHeight();
 
     // not copyable:
-    VertexHeight(VertexHeight&);
-    VertexHeight& operator=(const VertexHeight&);
+    RandHeight(RandHeight&);
+    RandHeight& operator=(const RandHeight&);
 
     // helper functions
     void InitRands();
@@ -37,30 +37,30 @@ private:
 
     // private data:
     int rand_seed_;
-    int lvl_distri_[VERTEX_LIST_HEIGHT];
-    static VertexHeight* instance_;
+    int lvl_distri_[MAX_HEIGHT];
+    static RandHeight* instance_;
 };
 
-template<int VERTEX_LIST_HEIGHT, int VERTEX_LIST_PINV>
-VertexHeight<VERTEX_LIST_HEIGHT, VERTEX_LIST_PINV>* VertexHeight<VERTEX_LIST_HEIGHT, VERTEX_LIST_PINV>::instance_ = nullptr;
+template<int MAX_HEIGHT, int LIST_PINV>
+RandHeight<MAX_HEIGHT, LIST_PINV>* RandHeight<MAX_HEIGHT, LIST_PINV>::instance_ = nullptr;
 
-template<int VERTEX_LIST_HEIGHT, int VERTEX_LIST_PINV>
-VertexHeight<VERTEX_LIST_HEIGHT, VERTEX_LIST_PINV>& VertexHeight<VERTEX_LIST_HEIGHT, VERTEX_LIST_PINV>::Instance()
+template<int MAX_HEIGHT, int LIST_PINV>
+RandHeight<MAX_HEIGHT, LIST_PINV>& RandHeight<MAX_HEIGHT, LIST_PINV>::Instance()
 {
     if (instance_ == nullptr)
     {
-        instance_ = new VertexHeight<VERTEX_LIST_HEIGHT, VERTEX_LIST_PINV>;
+        instance_ = new RandHeight<MAX_HEIGHT, LIST_PINV>;
     }
 
     return *instance_;
 }
 
-template<int VERTEX_LIST_HEIGHT, int VERTEX_LIST_PINV>
-int VertexHeight<VERTEX_LIST_HEIGHT, VERTEX_LIST_PINV>::RandomHeight()
+template<int MAX_HEIGHT, int LIST_PINV>
+int RandHeight<MAX_HEIGHT, LIST_PINV>::RandomHeight()
 {
     int iRnd = VertexListRand();
     int iLvl = 0;
-    while( (iLvl<VERTEX_LIST_HEIGHT-1) && (lvl_distri_[iLvl]<iRnd) )
+    while( (iLvl<MAX_HEIGHT-1) && (lvl_distri_[iLvl]<iRnd) )
     {
         ++iLvl;
     }
@@ -68,8 +68,8 @@ int VertexHeight<VERTEX_LIST_HEIGHT, VERTEX_LIST_PINV>::RandomHeight()
     return iLvl+1;
 }
 
-template<int VERTEX_LIST_HEIGHT, int VERTEX_LIST_PINV>
-VertexHeight<VERTEX_LIST_HEIGHT, VERTEX_LIST_PINV>::VertexHeight()
+template<int MAX_HEIGHT, int LIST_PINV>
+RandHeight<MAX_HEIGHT, LIST_PINV>::RandHeight()
 : rand_seed_(1)
 {
     InitRands();
@@ -77,23 +77,23 @@ VertexHeight<VERTEX_LIST_HEIGHT, VERTEX_LIST_PINV>::VertexHeight()
     atexit(&Clear);
 }
 
-template<int VERTEX_LIST_HEIGHT, int VERTEX_LIST_PINV>
-VertexHeight<VERTEX_LIST_HEIGHT, VERTEX_LIST_PINV>::~VertexHeight()
+template<int MAX_HEIGHT, int LIST_PINV>
+RandHeight<MAX_HEIGHT, LIST_PINV>::~RandHeight()
 {
 }
 
-template<int VERTEX_LIST_HEIGHT, int VERTEX_LIST_PINV>
-void VertexHeight<VERTEX_LIST_HEIGHT, VERTEX_LIST_PINV>::InitRands()
+template<int MAX_HEIGHT, int LIST_PINV>
+void RandHeight<MAX_HEIGHT, LIST_PINV>::InitRands()
 {
-    lvl_distri_[0] = VertexListRandMax()-VertexListRandMax()/VERTEX_LIST_PINV;
-    for (int i=1; i<VERTEX_LIST_HEIGHT; ++i)
+    lvl_distri_[0] = VertexListRandMax()-VertexListRandMax()/LIST_PINV;
+    for (int i=1; i<MAX_HEIGHT; ++i)
     {
-        lvl_distri_[i] = VertexListRandMax() - (VertexListRandMax()-lvl_distri_[i-1])/VERTEX_LIST_PINV;
+        lvl_distri_[i] = VertexListRandMax() - (VertexListRandMax()-lvl_distri_[i-1])/LIST_PINV;
     }
 }
 
-template<int VERTEX_LIST_HEIGHT, int VERTEX_LIST_PINV>
-int VertexHeight<VERTEX_LIST_HEIGHT, VERTEX_LIST_PINV>::VertexListRand()
+template<int MAX_HEIGHT, int LIST_PINV>
+int RandHeight<MAX_HEIGHT, LIST_PINV>::VertexListRand()
 {
     rand_seed_ = LCG_CONST_A * (rand_seed_ % LCG_CONST_Q) - LCG_CONST_R * (rand_seed_ / LCG_CONST_Q);
 
@@ -105,20 +105,20 @@ int VertexHeight<VERTEX_LIST_HEIGHT, VERTEX_LIST_PINV>::VertexListRand()
     return rand_seed_;
 }
 
-template<int VERTEX_LIST_HEIGHT, int VERTEX_LIST_PINV>
-void VertexHeight<VERTEX_LIST_HEIGHT, VERTEX_LIST_PINV>::SetVertexListrand_seed_(int newSeed)
+template<int MAX_HEIGHT, int LIST_PINV>
+void RandHeight<MAX_HEIGHT, LIST_PINV>::SetVertexListrand_seed_(int newSeed)
 {
     rand_seed_ = newSeed;
 }
 
-template<int VERTEX_LIST_HEIGHT, int VERTEX_LIST_PINV>
-int VertexHeight<VERTEX_LIST_HEIGHT, VERTEX_LIST_PINV>::VertexListRandMax()
+template<int MAX_HEIGHT, int LIST_PINV>
+int RandHeight<MAX_HEIGHT, LIST_PINV>::VertexListRandMax()
 {
     return LCG_PRIME_M;
 }
 
-template<int VERTEX_LIST_HEIGHT, int VERTEX_LIST_PINV>
-void VertexHeight<VERTEX_LIST_HEIGHT, VERTEX_LIST_PINV>::Clear()
+template<int MAX_HEIGHT, int LIST_PINV>
+void RandHeight<MAX_HEIGHT, LIST_PINV>::Clear()
 {
     delete instance_;
     instance_ = nullptr;

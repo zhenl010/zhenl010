@@ -29,9 +29,6 @@
     <ClInclude Include="skip_list_set.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="skip_list_set_iterator.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="skip_list_test.h">
       <Filter>Header Files</Filter>
     </ClInclude>
