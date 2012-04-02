@@ -58,8 +58,8 @@ DirectedGraph::UniqueId DirectedGraph::NewVertex() // returns the new vertex's i
 
 bool DirectedGraph::AddEdge(UniqueId fromid, UniqueId destid, LengthType length)
 {
-    Vertex* vert_from = FindById(fromid);
-    Vertex* vert_dest = FindById(destid);
+    Vertex* vert_from = VertexById(fromid);
+    Vertex* vert_dest = VertexById(destid);
     if (vert_from==nullptr || vert_dest==nullptr)
     {
         return false;
@@ -128,8 +128,8 @@ bool DirectedGraph::RemoveVertex(UniqueId vid)
 
 bool DirectedGraph::RemoveEdge(UniqueId fromid, UniqueId destid)
 {
-    Vertex* vert_from = FindById(fromid);
-    Vertex* vert_dest = FindById(destid);
+    Vertex* vert_from = VertexById(fromid);
+    Vertex* vert_dest = VertexById(destid);
     if (vert_from==nullptr || vert_dest==nullptr)
     {
         return false;
@@ -154,6 +154,11 @@ DirectedGraph::VertexIterator DirectedGraph::vert_begin()
 DirectedGraph::VertexIterator DirectedGraph::vert_end()
 {
     return VertexIterator(*this, nullptr);
+}
+
+DirectedGraph::VertexIterator DirectedGraph::VertexItorById(UniqueId vid)
+{
+    return VertexIterator(*this, VertexById(vid));
 }
 
 DirectedGraph::EdgeIterator DirectedGraph::edge_begin()
@@ -220,7 +225,7 @@ void DirectedGraph::InsertVetexOrDie(Vertex* new_vert)
     }
 }
 
-DirectedGraph::Vertex* DirectedGraph::FindById(UniqueId tarid)
+DirectedGraph::Vertex* DirectedGraph::VertexById(UniqueId tarid)
 {
     Vertex* curr_vertex = vert_head_;
     

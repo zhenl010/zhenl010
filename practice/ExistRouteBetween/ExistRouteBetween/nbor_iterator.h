@@ -12,7 +12,9 @@ class DirectedGraph::NborIterator
 public:
     NborIterator(DirectedGraph& graph, DirectedGraph::OutgoingEdgeContainer::iterator& vertex);
 
-    DirectedGraph::UniqueId NborId();
+    DirectedGraph::UniqueId VertexId();
+    DirectedGraph::VertexIterator VertexIterator();
+    DirectedGraph::LengthType Distance();
 
     DirectedGraph::OutgoingEdgeContainer::iterator operator*() { return nbor_; }
     bool operator==(const NborIterator& rhs) const { return &(graph_)==&(rhs.graph_) && nbor_==rhs.nbor_; }

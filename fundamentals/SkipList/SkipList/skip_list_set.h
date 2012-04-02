@@ -66,6 +66,7 @@ private:
     Node** node_fix_;
 
     // Helper functions
+    void ClearContent();
     Node* CreateNode(int height);
     void ReleaseContent(Node* node);
     Node* FindNodeByValue(T);
@@ -82,15 +83,7 @@ SkipListSet<T, MAX_HEIGHT, CompareFunc>::SkipListSet()
 template < typename T, int MAX_HEIGHT, typename CompareFunc >
 SkipListSet<T, MAX_HEIGHT, CompareFunc>::~SkipListSet()
 {
-    Node* curr_node = head_node_->next_nodes[0];
-    while (curr_node != nullptr)
-    {
-        Node* next_node = curr_node->next_nodes[0];
-        ReleaseContent(curr_node);
-        curr_node = next_node;
-    }
-    ReleaseContent(head_node_);
-    delete [] node_fix_;
+    ClearContent();
 }
 
 template < typename T, int MAX_HEIGHT, typename CompareFunc>
@@ -146,7 +139,7 @@ bool SkipListSet<T, MAX_HEIGHT, CompareFunc>::Remove(const T& value)
     }
 
     Node* curr_node = prev_node->next_nodes[0];
-    if (curr_node==nullptr || curr_node->data!=value)
+    if (curr_node==nullptr || less_func(value, curr_node->data))
     {
         return false;
     }
@@ -167,6 +160,20 @@ bool SkipListSet<T, MAX_HEIGHT, CompareFunc>::Remove(const T& value)
     ReleaseContent(curr_node);
     --size_;
     return true;
+}
+
+template < typename T, int MAX_HEIGHT, typename CompareFunc >
+void SkipListSet<T, MAX_HEIGHT, CompareFunc>::ClearContent()
+{
+    Node* curr_node = head_node_->next_nodes[0];
+    while (curr_node != nullptr)
+    {
+        Node* next_node = curr_node->next_nodes[0];
+        ReleaseContent(curr_node);
+        curr_node = next_node;
+    }
+    ReleaseContent(head_node_);
+    delete [] node_fix_;
 }
 
 template < typename T, int MAX_HEIGHT, typename CompareFunc >

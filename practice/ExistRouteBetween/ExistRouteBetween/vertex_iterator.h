@@ -13,6 +13,7 @@ public:
     VertexIterator(DirectedGraph& graph, DirectedGraph::Vertex* vertex);
 
     DirectedGraph::UniqueId VertexId() { return vertex_->uniqueid; }
+    void* &VoidPtr() { return vertex_->vert_state; }
     DirectedGraph::NborIterator outgoing_begin();
     DirectedGraph::NborIterator outgoing_end();
 

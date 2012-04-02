@@ -32,6 +32,7 @@ public:
     friend class VertexIterator;
     VertexIterator vert_begin();
     VertexIterator vert_end();
+    VertexIterator VertexItorById(UniqueId); /// @TODO: use keyword explicit when compiler support it
     class EdgeIterator;
     friend class EdgeIterator;
     EdgeIterator edge_begin();
@@ -91,7 +92,7 @@ private:
     Vertex* CreateVertex(int);
     void ReleaseContent(Vertex*);
     void InsertVetexOrDie(Vertex*);
-    Vertex* FindById(UniqueId);
+    Vertex* VertexById(UniqueId);
 
     // edge helper functions:
     Edge* CreateEdge(Vertex*, Vertex*, LengthType);
