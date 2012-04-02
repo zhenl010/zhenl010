@@ -109,11 +109,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="directed_graph.cpp" />
+    <ClCompile Include="edge_iterator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="vertex_iterator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="directed_graph.h" />
+    <ClInclude Include="edge_iterator.h" />
     <ClInclude Include="rand_height_generator.h" />
     <ClInclude Include="skip_list_set.h" />
     <ClInclude Include="vertex_iterator.h" />

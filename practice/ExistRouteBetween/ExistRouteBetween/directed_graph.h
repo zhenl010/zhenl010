@@ -27,10 +27,12 @@ public:
     bool RemoveVertex(UniqueId); // fail when the id does not exist
     bool RemoveEdge(UniqueId, UniqueId);
 
-    // allow access via iterator classes
+    // iterator classes
+    class VertexIterator;
     friend class VertexIterator;
     VertexIterator vert_begin();
     VertexIterator vert_end();
+    class EdgeIterator;
     friend class EdgeIterator;
     EdgeIterator edge_begin();
     EdgeIterator edge_end();

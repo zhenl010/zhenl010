@@ -24,6 +24,9 @@
     <ClCompile Include="vertex_iterator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="edge_iterator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vertex_iterator.h">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="skip_list_set.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="edge_iterator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

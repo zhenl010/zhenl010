@@ -2,6 +2,8 @@
 #include <cassert>
 #include <limits>
 #include "skip_list_set.h"
+#include "vertex_iterator.h"
+#include "edge_iterator.h"
 
 namespace augment_data_structure
 {
@@ -87,42 +89,41 @@ bool DirectedGraph::RemoveVertex(UniqueId vid)
     }
 
     Vertex* curr_vert = prev_vert->next_verts[0];
-    if ( curr_vert!=nullptr && curr_vert->uniqueid==vid )
-    {
-        for (int idx=0; idx<curr_height_; ++idx)
-        {
-            if (vert_fix_[idx]->next_verts[idx] != nullptr)
-            {
-                vert_fix_[idx]->next_verts[idx] = vert_fix_[idx]->next_verts[idx]->next_verts[idx];
-            }
-        }       
-
-        while ( 0<curr_height_ && vert_head_->next_verts[curr_height_-1]==nullptr )
-        {
-            --curr_height_;
-        }
-
-        for (IncomingEdgeContainer::iterator itor = (curr_vert->incoming_edges).begin();
-            itor != (curr_vert->incoming_edges).end(); ++itor)
-        {
-            (*itor)->from->outgoing_edges.Remove(*itor);
-            RemoveEdge(*itor);
-        }
-        for (OutgoingEdgeContainer::iterator itor = (curr_vert->outgoing_edges).begin();
-            itor != (curr_vert->outgoing_edges).end(); ++itor)
-        {
-            (*itor)->dest->incoming_edges.Remove(*itor);
-            RemoveEdge(*itor);
-        }
-
-        ReleaseContent(curr_vert);
-
-        return true;
-    }
-    else
+    if ( curr_vert == nullptr || vid < curr_vert->uniqueid )
     {
         return false;
     }
+
+    for (int idx=0; idx<curr_height_; ++idx)
+    {
+        if (vert_fix_[idx]->next_verts[idx] != nullptr)
+        {
+            vert_fix_[idx]->next_verts[idx] = vert_fix_[idx]->next_verts[idx]->next_verts[idx];
+        }
+    }       
+
+    while ( 0<curr_height_ && vert_head_->next_verts[curr_height_-1]==nullptr )
+    {
+        --curr_height_;
+    }
+
+    for (IncomingEdgeContainer::iterator itor = (curr_vert->incoming_edges).begin();
+        itor != (curr_vert->incoming_edges).end(); ++itor)
+    {
+        (*itor)->from->outgoing_edges.Remove(*itor);
+        RemoveEdge(*itor);
+    }
+
+    for (OutgoingEdgeContainer::iterator itor = (curr_vert->outgoing_edges).begin();
+        itor != (curr_vert->outgoing_edges).end(); ++itor)
+    {
+        (*itor)->dest->incoming_edges.Remove(*itor);
+        RemoveEdge(*itor);
+    }
+
+    ReleaseContent(curr_vert);
+
+    return true;
 }
 
 bool DirectedGraph::RemoveEdge(UniqueId fromid, UniqueId destid)
@@ -136,10 +137,33 @@ bool DirectedGraph::RemoveEdge(UniqueId fromid, UniqueId destid)
 
     // use a dummy edge to track
     Edge* dummy_edge = CreateEdge(vert_from, vert_dest, -1);
-    vert_from->outgoing_edges.Remove(dummy_edge);
-    vert_dest->incoming_edges.Remove(dummy_edge);
+    Edge* edge_retrived = *(vert_from->outgoing_edges.Find(dummy_edge));
     ReleaseContent(dummy_edge);
+    vert_from->outgoing_edges.Remove(edge_retrived);
+    vert_dest->incoming_edges.Remove(edge_retrived);
+    RemoveEdge(edge_retrived);
+
     return true;
+}
+
+DirectedGraph::VertexIterator DirectedGraph::vert_begin()
+{
+    return VertexIterator(*this, vert_head_->next_verts[0]);
+}
+
+DirectedGraph::VertexIterator DirectedGraph::vert_end()
+{
+    return VertexIterator(*this, nullptr);
+}
+
+DirectedGraph::EdgeIterator DirectedGraph::edge_begin()
+{
+    return EdgeIterator(*this, edge_head_);
+}
+
+DirectedGraph::EdgeIterator DirectedGraph::edge_end()
+{
+    return EdgeIterator(*this, nullptr);
 }
 
 DirectedGraph::Vertex* DirectedGraph::CreateVertex(int height)
@@ -260,7 +284,12 @@ void DirectedGraph::RemoveEdge(Edge* edge)
     else
     {
         edge->prev_edge->next_edge = edge->next_edge;
+        if (edge->next_edge != nullptr)
+        {
+            edge->next_edge->prev_edge = edge->prev_edge;
+        } 
     }
+
     ReleaseContent(edge);
 }
 
