@@ -7,11 +7,11 @@
 //////////////////////////////////////////////////////////////////////////
 #include <iostream>
 #include <vector>
-#include <set>
 #include "rand_height_generator.h"
 #include "directed_graph.h"
 #include "vertex_iterator.h"
 #include "edge_iterator.h"
+#include "nbor_iterator.h"
 
 int main(int argc, char** argv)
 {
@@ -38,54 +38,16 @@ int main(int argc, char** argv)
             test_graph.AddEdge(i+1, i+2, 1);
             test_graph.AddEdge(i+1, i-1, 1);
         }
-
-        cout << "Printing graph vertices IDs: " << endl;
-        for (DirectedGraph::VertexIterator vtor=test_graph.vert_begin(); vtor!=test_graph.vert_end(); ++vtor)
-        {
-            cout << vtor.VertexId() << endl;
-        }
-        cout << "end of graph vertices IDs: " << endl;
-
-        cout << "Printing graph edges' end IDs: " << endl;
-        for (DirectedGraph::EdgeIterator etor=test_graph.edge_begin(); etor!=test_graph.edge_end(); ++etor)
-        {
-            DirectedGraph::UniqueId FromVertexId();
-            DirectedGraph::UniqueId DestVertexId();
-
-            cout << etor.FromVertexId() << "  ===>  " << etor.DestVertexId() << endl;
-        }
-        cout << "end of graph edges' IDs: " << endl;
-       
+      
         test_graph.RemoveEdge(3, 1);
-
-        cout << "After edge removal: " << endl;
-        for (DirectedGraph::VertexIterator vtor=test_graph.vert_begin(); vtor!=test_graph.vert_end(); ++vtor)
-        {
-            cout << vtor.VertexId() << endl;
-        }
-        cout << "end of graph vertices IDs: " << endl;
-
-        cout << "After edge removal: " << endl;
-        for (DirectedGraph::EdgeIterator etor=test_graph.edge_begin(); etor!=test_graph.edge_end(); ++etor)
-        {
-            DirectedGraph::UniqueId FromVertexId();
-            DirectedGraph::UniqueId DestVertexId();
-
-            cout << etor.FromVertexId() << "  ===>  " << etor.DestVertexId() << endl;
-        }
-        cout << "end of graph edges' IDs: " << endl;
-
-        if (!test_graph.RemoveVertex(vertex_num/2))
-        {           
-            cout << vertex_num/2 << "th vertex Removal failed ..........." << endl;
-        }
+        test_graph.RemoveVertex(vertex_num/2);
 
         cout << "After vertex removal: " << endl;
         for (DirectedGraph::VertexIterator vtor=test_graph.vert_begin(); vtor!=test_graph.vert_end(); ++vtor)
         {
             cout << vtor.VertexId() << endl;
         }
-        cout << "end of graph vertices IDs: " << endl;
+        cout << "end of graph vertices IDs: " << endl << endl;
 
         cout << "After vertex removal: " << endl;
         for (DirectedGraph::EdgeIterator etor=test_graph.edge_begin(); etor!=test_graph.edge_end(); ++etor)
@@ -95,7 +57,24 @@ int main(int argc, char** argv)
 
             cout << etor.FromVertexId() << "  ===>  " << etor.DestVertexId() << endl;
         }
-        cout << "end of graph edges' IDs: " << endl;
+        cout << "end of graph edges' IDs: " << endl << endl;
+
+        int someid = 5;
+        cout << " Nbors of vertex #: " << someid << " are:" <<endl;
+        for (DirectedGraph::VertexIterator vtor=test_graph.vert_begin(); vtor!=test_graph.vert_end(); ++vtor)
+        {
+            if (vtor.VertexId() == someid)
+            {
+                ///@TODO: nbor iterator is not normal edge iterator lolz
+                for (DirectedGraph::NborIterator etor=vtor.outgoing_begin(); etor!=vtor.outgoing_end(); ++etor)
+                {
+                    DirectedGraph::UniqueId FromVertexId();
+                    DirectedGraph::UniqueId DestVertexId();
+
+                    cout << vtor.VertexId() << "  ===>  " << etor.NborId() << endl;
+                }
+            }
+        }
     }
 
     return 0;

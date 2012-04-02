@@ -36,6 +36,8 @@ public:
     friend class EdgeIterator;
     EdgeIterator edge_begin();
     EdgeIterator edge_end();
+    class NborIterator;
+    friend class NborIterator;
 
 private:
     // disable copy and assign operations

@@ -13,6 +13,9 @@ public:
     VertexIterator(DirectedGraph& graph, DirectedGraph::Vertex* vertex);
 
     DirectedGraph::UniqueId VertexId() { return vertex_->uniqueid; }
+    DirectedGraph::NborIterator outgoing_begin();
+    DirectedGraph::NborIterator outgoing_end();
+
     DirectedGraph::Vertex* operator*() { return vertex_; }
     bool operator==(const VertexIterator& rhs) const { return &(graph_)==&(rhs.graph_) && vertex_==rhs.vertex_; }
     bool operator!=(const VertexIterator& rhs) const { return !(*this==rhs); }
