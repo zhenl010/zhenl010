@@ -11,17 +11,17 @@
 #include <string>
 #include <vector>
 
-typedef std::string DataType;
+typedef std::string StringType;
 
-void PrintPermutations(std::vector<DataType>&, unsigned int);
-void PrintStringArray(const std::vector<DataType>&);
+void PrintPermutations(std::vector<StringType>&, unsigned int);
+void PrintStringArray(const std::vector<StringType>&);
 
-void PrintAllPermutations(std::vector<DataType>& arrayNoDup)
+void PrintAllPermutations(std::vector<StringType>& arrayNoDup)
 {
     PrintPermutations(arrayNoDup, 0);
 }
 
-void PrintPermutations(std::vector<DataType>& arrayNoDup, unsigned int idx)
+void PrintPermutations(std::vector<StringType>& arrayNoDup, unsigned int idx)
 {
     if (idx >= (arrayNoDup.size()-1))
     {
@@ -38,9 +38,9 @@ void PrintPermutations(std::vector<DataType>& arrayNoDup, unsigned int idx)
     }
 }
 
-void PrintStringArray(const std::vector<DataType>& strArray)
+void PrintStringArray(const std::vector<StringType>& strArray)
 {
-    for (std::vector<DataType>::const_iterator itor = strArray.begin(); itor!=strArray.end(); ++itor)
+    for (std::vector<StringType>::const_iterator itor = strArray.begin(); itor!=strArray.end(); ++itor)
     {
         std::cout << *itor;
     }
@@ -51,7 +51,7 @@ int main()
 {
     using namespace std;
 
-    vector<DataType> arrayNoDup;
+    vector<StringType> arrayNoDup;
     arrayNoDup.push_back("a");
     arrayNoDup.push_back("b");
     arrayNoDup.push_back("c");
