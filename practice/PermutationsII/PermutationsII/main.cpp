@@ -1,56 +1,212 @@
+﻿//////////////////////////////////////////////////////////////////////////
+// Given a collection of numbers that might contain duplicates, return all 
+// possible unique permutations.
+// 
+// For example,
+// [1,1,2] have the following unique permutations:
+// [1,1,2], [1,2,1], and [2,1,1].
+// 
+// 注意{ -1,2,0,-1,1,0,1 }有630个不同的permutations
+//////////////////////////////////////////////////////////////////////////
 #include <iostream>
+#include <cassert>
 #include <vector>
+#include <list>
+#include <set>
 #include <algorithm>
 
 using namespace std;
 
 class Solution {
 public:
-    vector<vector<int> > permuteUnique(vector<int> &num) {
-        // Start typing your C/C++ solution below
-        // DO NOT write int main() function
-        vector<vector<int> > results;
-        sort(num.begin(), num.end());
+    struct ItmCount
+    {
+        int x;
+        int count;
+    };
 
-        vector<int> indices(num.size());
-        for(int i=0; i<num.size(); ++i) indices[i] = i;
-        PermuteUnique(results, indices, 0, num);
+    //////////////////////////////////////////////////////////////////////////
+    // Most efficient?
+    //////////////////////////////////////////////////////////////////////////
+    vector<vector<int> > UniquePermutations(vector<int> &nums)
+    {
+        vector<vector<int> > results;
+
+        vector<ItmCount> items = CountUniqueItems(nums);
+
+        GeneratePermutation(results, nums, 0, items);
+
         return results;
     }
 
-    void PermuteUnique(vector<vector<int> >& results, vector<int>& indices, int curr, const vector<int>& nums)
+    void GeneratePermutation(vector<vector<int> >& results, vector<int>& numbers, int idx, vector<ItmCount>& items)
     {
-        if(curr >= nums.size()) return;
-        if(curr == nums.size()-1)
+        if (idx == numbers.size())
         {
-            vector<int> answ;
-            for(int i=0; i<indices.size(); ++i) answ.push_back(nums[indices[i]]);
-            results.push_back(answ);
+            results.push_back(numbers);
             return;
         }
 
-        PermuteUnique(results, indices, curr+1, nums);
-        int next = curr + 1;
-        while (next<nums.size())
+        for (int i=0; i<items.size(); ++i)
         {
-            if(nums[indices[next]]!=nums[indices[curr]])
+            if (items[i].count > 0)
             {
-                swap(indices[curr], indices[next]);
-                PermuteUnique(results, indices, curr+1, nums);
-                swap(indices[curr], indices[next]);
-                while (next+1<nums.size() && nums[indices[next+1]]==nums[indices[next]])
-                {
-                    ++next;
-                }            
-                ++next;
+                numbers[idx] = items[i].x;
+                --items[i].count;
+                GeneratePermutation(results, numbers, idx+1, items);
+                ++items[i].count;
+            }
+        }
+    }
+
+    vector<ItmCount> CountUniqueItems(vector<int> &nums)
+    {
+        vector<ItmCount> items;
+        if (nums.empty()) return items;
+
+        sort(nums.begin(), nums.end());
+        ItmCount itm = { nums[0], 1 };
+        for (int i=1; i<nums.size(); ++i)
+        {
+            if (nums[i] == nums[i-1])
+            {
+                ++itm.count;
             }
             else
             {
-                while (next<nums.size() && nums[indices[next]]==nums[indices[curr]])
-                {
-                    ++next;
-                }            
+                items.push_back(itm);
+                itm.x = nums[i];
+                itm.count = 1;
             }
+        }
+        items.push_back(itm);
+        return items;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // list version:
+    //////////////////////////////////////////////////////////////////////////
+    typedef list<int>::iterator ListIter;
+    list<vector<int> > PermuteUnique(vector<int> &nums)
+    {
+        sort(nums.begin(), nums.end());
+        list<int> numbers;
+        for (int i=0; i<nums.size(); ++i)
+        {
+            numbers.push_back(nums[i]);
+        }
+        list<vector<int> > results;
+        PermuteUnique(results, numbers.begin(), numbers);
+        return results;
+    }
+
+    void PermuteUnique(list<vector<int> >& results, ListIter& curr, list<int>& numbers)
+    {
+        if(curr == numbers.end())
+        {
+            vector<int> nums(numbers.size());
+            int idx = 0;
+            for (ListIter itr=numbers.begin(); itr!=numbers.end(); ++itr)
+            {
+                nums[idx] = *itr;
+                ++idx;
+            }
+            results.push_back(nums);
+            return;
+        }
+
+        ListIter probe = curr;        
+        ++probe;
+        PermuteUnique(results, probe, numbers);
+        while (probe!=numbers.end())
+        {
+            ListIter last = probe;
+            --last;
+            if (*probe != *curr && *probe != *last)
+            {
+                numbers.insert(curr, *probe); // insert to curr position
+                probe = numbers.erase(probe); // now probe already inc
+                PermuteUnique(results,curr, numbers);
+
+                if (results.size()==7 && *curr==0)
+                {
+                    bool debughere = true;
+                }
+
+                --curr;
+                numbers.insert(probe, *curr);
+                curr = numbers.erase(curr);
+            }
+            else
+            {
+                ++probe;
+            }
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // ihasleetcode's post saves indices that's already swaped
+    //////////////////////////////////////////////////////////////////////////
+    vector<vector<int> > permuteUnique(vector<int> &num) {
+        sort(num.begin(), num.end());
+        vector<vector<int> > ret;
+        int n = num.size();
+        bool *used = new bool[n];
+        int *index = new int[n];
+        memset(used, 0, n*sizeof(bool));
+        permuteUnique(num, used, index, 0, ret);
+        delete[] used;
+        delete[] index;
+        return ret;
+    }
+
+    void permuteUnique(vector<int> &num, bool used[], int index[], 
+        int pos, vector<vector<int> > &ret) {
+            int n = num.size();
+            if (pos == n) {
+                vector<int> ans;
+                for (int i = 0; i < n; i++) {
+                    ans.push_back(num[index[i]]);
+                }
+                ret.push_back(ans);
+                return;
+            }
+            for (int i = 0; i < n; ) {
+                if (used[i]) { i++; continue; }
+                used[i] = true;
+                index[pos] = i;
+                permuteUnique(num, used, index, pos+1, ret);
+                used[i] = false;
+                int j = i;
+                while (i < n && num[i] == num[j]) i++;
+            }
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // when there's no duplicate elements:
+    //////////////////////////////////////////////////////////////////////////
+    vector<vector<int> > permute(vector<int> &num) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        vector<vector<int> > results;
+        Permute(results, 0, num);
+        return results;
+    }
+
+    void Permute(vector<vector<int> >& results, int curr, vector<int>& nums)
+    {
+        if(curr == nums.size()-1)
+        {
+            results.push_back(nums);
+            return;
+        }
+
+        Permute(results, curr+1, nums);
+        for(int idx=curr+1; idx<nums.size(); ++idx)
+        {
+            swap(nums[curr], nums[idx]);
+            Permute(results, curr+1, nums);
+            swap(nums[curr], nums[idx]);
         }
     }
 };
@@ -58,10 +214,25 @@ public:
 int main(int argc, char** argv)
 {
     int arrayin[] = { -1,2,0,-1,1,0,1 };
+    // int arrayin[] = { 1,1,2 };
     vector<int> nums(arrayin, arrayin+sizeof(arrayin)/sizeof(arrayin[0]));
 
     Solution solver;
+    vector<vector<int> > ansvecs = solver.UniquePermutations(nums);
+    list<vector<int> > anslist = solver.PermuteUnique(nums);
     vector<vector<int> > results = solver.permuteUnique(nums);
+
+    set<vector<int> > verify;
+    for (int i=0; i<results.size(); ++i)
+    {
+        int sizebefore = verify.size();
+        verify.insert(results[i]);
+        if (verify.size() == sizebefore)
+        {
+            vector<int> dupa = results[i];
+            bool dupfound = true;
+        }
+    }
 
     return 0;
 }
