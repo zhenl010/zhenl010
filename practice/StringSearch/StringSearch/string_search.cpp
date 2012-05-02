@@ -7,7 +7,7 @@ namespace // unnamed namespace
 
 // Assume array sizes are real size (not including trailing '\0')
 const int ALPHABET_SIZE = CHAR_MAX-CHAR_MIN+1;
-const int MAX_PATTERN_SIZE = 512;
+const int MAX_PATTERN_SIZE = 1<<16;
 
 inline char max ( char a, char b )
 {
@@ -99,13 +99,11 @@ void BmProcessGoodSkips(int* bmgoodskips, char* pat, int m)
     for (idx=0; idx<m-1; ++idx)
     {
         lvl = idx+1;
-        while (lvl < m)
+        lvl = borders[lvl];
+        while (lvl < m && pat[idx] != pat[lvl-1])
         {
+            bmgoodskips[lvl-1] = lvl - idx - 1;
             lvl = borders[lvl];
-            if (pat[idx] != pat[lvl-1])
-            {
-                bmgoodskips[lvl-1] = lvl - idx - 1;
-            }
         }
     }
 
@@ -116,33 +114,6 @@ void BmProcessGoodSkips(int* bmgoodskips, char* pat, int m)
         lvl = borders[lvl];
         bmgoodskips[lvl-1] = min(bmgoodskips[lvl-1], lvl);
     }
-
-    /*
-    for (i = 0; i < m; ++i)
-    {
-        bmgoodskips[i] = m;
-    }
-
-    j = 0;
-    for (i = m - 2; i >= 0; --i)
-    {
-        if (borders[i] == i + 1)
-        {
-            for (; j < m - 1 - i; ++j)
-            {
-                if (bmgoodskips[j] == m)
-                {
-                    bmgoodskips[j] = m - 1 - i;
-                }
-            }
-        }
-    }
-
-    for (i = 0; i <= m - 2; ++i)
-    {
-        bmgoodskips[m - 1 - borders[i]] = m - 1 - i;
-    }
-    */
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -208,7 +179,7 @@ char* kmp_str_search(char* haystack, char* needle, int m)
             if (index == m-1)
             {
                 delete [] kmp_table;
-                return &haystack[m];
+                return &haystack[start];
             }
             ++index;
         } 
