@@ -7,7 +7,7 @@ namespace // unnamed namespace
 {
 //////////////////////////////////////////////////////////////////////////
 
-const std::string DEFAULT_INPUT_FILENAME = "input.txt";
+const std::string DEFAULT_INPUT_FILENAME = "default_input.txt";
 const std::string DEFAULT_OUTPUT_FILENAME = "default_output.txt";
 
 //////////////////////////////////////////////////////////////////////////
@@ -55,61 +55,28 @@ int main(int argc, char** argv)
     ifstream inFile(inputFileName, ios::in);
     if (inFile.is_open())
     {
-        string line_str;
-        // Read in line by line
-        while (getline(inFile, line_str))
+        // write to output file
+        ofstream outfile(outputFilename, ios::out);
+        if (outfile.is_open())
         {
-            stringstream line_stream(line_str);
+            stringstream strstream;
+            strstream << inFile.rdbuf();
+            string ctstr(strstream.str());
 
-            string haystr;
-            line_stream >> haystr;
+            for (int i=0; i<ctstr.size(); ++i)
+            {
+                if (ctstr[i]=='\t')
+                {
+                    ctstr[i] = '\n';
+                }
+            }
+
+            outfile << ctstr;
+            outfile.close();
         }
 
         inFile.close();
     }
-
-    // write to output file
-    ofstream outfile(outputFilename, ios::out);
-    if (outfile.is_open())
-    {
-        int i = 0;
-        // for (; i<msgs.size(); ++i)
-        {
-            outfile << "Case #" << i << ": " << rand() << endl;
-        }
-
-        outfile.close();
-    }
-
-    //////////////////////////////////////////////////////////////////////////
-    // Reading and Writing Complex Data
-    // Although the read and write methods accept a char* pointer, there is no requirement
-    // that the data you read and/or write be held in a char array. You can read or write
-    // complex data objects using simple type casting of pointers:
-    //////////////////////////////////////////////////////////////////////////
-
-    class DemoType {
-        int    key;
-        double value;
-    };
-
-    DemoType x;
-    DemoType *y = new DemoType[10];
-
-    fstream myFile ("data.bin", ios::in | ios::out | ios::binary);
-
-    long location;
-    location=myFile.tellp();
-    myFile.seekp (location);
-    myFile.write ((char*)&x, sizeof (DemoType));
-    //...
-    myFile.seekg (0);
-    myFile.read ((char*)y, sizeof (DemoType) * 10);
-
-    // get length of file:
-    // is.seekg (0, ios::end);
-    // length = is.tellg();
-    // is.seekg (0, ios::beg);
 
     return 0;
 }
