@@ -33,19 +33,13 @@ void PrintCombinations(std::vector<std::vector<DataType>::size_type>& outputs,
     const std::vector<DataType>& arrayNoDup,
     std::vector<DataType>::size_type endIdxOut)
 {
-    for (std::vector<DataType>::size_type idx=startIdxIn; idx<arrayNoDup.size()-1; ++idx)
+    for (std::vector<DataType>::size_type idx=startIdxIn; idx<arrayNoDup.size(); ++idx)
     {
         outputs[endIdxOut++] = idx;
         PrintOut(outputs, 0, endIdxOut, arrayNoDup);
-
         PrintCombinations(outputs, idx+1, arrayNoDup, endIdxOut);
-
         --endIdxOut;
     }
-
-    outputs[endIdxOut++] = arrayNoDup.size()-1;
-    PrintOut(outputs, 0, endIdxOut, arrayNoDup);
-    --endIdxOut;
 }
 
 void PrintOut(const std::vector<std::vector<DataType>::size_type>& idxArray,
