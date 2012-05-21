@@ -7,7 +7,7 @@ namespace // unnamed namespace
 {
 //////////////////////////////////////////////////////////////////////////
 
-const std::string DEFAULT_INPUT_FILENAME = "input.txt";
+const std::string DEFAULT_INPUT_FILENAME = "default_input.txt";
 const std::string DEFAULT_OUTPUT_FILENAME = "default_output.txt";
 
 //////////////////////////////////////////////////////////////////////////
