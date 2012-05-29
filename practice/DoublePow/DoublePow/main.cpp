@@ -16,30 +16,26 @@
 // Special version for performance
 double PowDoubleInt(double x, int n)
 {
-    if (n<0)
-    {
-        return 1.0 / PowDoubleInt(x, -n);
-    }
+    if(n<0) return 1.0/(x*pow(x, -(n+1)));
 
-    double accu = 1.0;
-    while (n)
-    {
-        if ((n&1) != 0)
-        {
-            accu *= x;
+    double y = 1.0;
+    while(n > 0) {
+        if((n&1) > 0) {
+            y *= x;
         }
-        n>>=1; // math.h exited from here to save a multiply operation
+        n >>= 1;
+        if(!n) return y;
         x *= x;
     }
-    return accu;
+    return y;
 }
 
 int main(int argc, char** argv)
 {
     using namespace std;
 
-    double x = 3.2;
-    int n = -6;
+    double x = -1.0;
+    int n = -2147483648;
 
     double y = pow(x, n);
     double ytest = PowDoubleInt(x, n);

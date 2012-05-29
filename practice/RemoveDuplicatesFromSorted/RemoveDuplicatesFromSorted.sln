@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RemoveDuplicatesFromSorted", "RemoveDuplicatesFromSorted\RemoveDuplicatesFromSorted.vcxproj", "{FDB6C32A-6BC6-46C1-9616-FA3C46925EBD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FDB6C32A-6BC6-46C1-9616-FA3C46925EBD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FDB6C32A-6BC6-46C1-9616-FA3C46925EBD}.Debug|Win32.Build.0 = Debug|Win32
+		{FDB6C32A-6BC6-46C1-9616-FA3C46925EBD}.Release|Win32.ActiveCfg = Release|Win32
+		{FDB6C32A-6BC6-46C1-9616-FA3C46925EBD}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

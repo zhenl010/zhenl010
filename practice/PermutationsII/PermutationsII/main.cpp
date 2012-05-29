@@ -18,46 +18,12 @@
 using namespace std;
 
 class Solution {
-public:
+private:
     struct ItmCount
     {
-        int x;
+        int val;
         int count;
     };
-
-    //////////////////////////////////////////////////////////////////////////
-    // Most efficient?
-    //////////////////////////////////////////////////////////////////////////
-    vector<vector<int> > UniquePermutations(vector<int> &nums)
-    {
-        vector<vector<int> > results;
-
-        vector<ItmCount> items = CountUniqueItems(nums);
-
-        GeneratePermutation(results, nums, 0, items);
-
-        return results;
-    }
-
-    void GeneratePermutation(vector<vector<int> >& results, vector<int>& numbers, int idx, vector<ItmCount>& items)
-    {
-        if (idx == numbers.size())
-        {
-            results.push_back(numbers);
-            return;
-        }
-
-        for (int i=0; i<items.size(); ++i)
-        {
-            if (items[i].count > 0)
-            {
-                numbers[idx] = items[i].x;
-                --items[i].count;
-                GeneratePermutation(results, numbers, idx+1, items);
-                ++items[i].count;
-            }
-        }
-    }
 
     vector<ItmCount> CountUniqueItems(vector<int> &nums)
     {
@@ -66,16 +32,12 @@ public:
 
         sort(nums.begin(), nums.end());
         ItmCount itm = { nums[0], 1 };
-        for (int i=1; i<nums.size(); ++i)
-        {
-            if (nums[i] == nums[i-1])
-            {
+        for (int i=1; i<nums.size(); ++i) {
+            if (nums[i] == nums[i-1]) {
                 ++itm.count;
-            }
-            else
-            {
+            } else {
                 items.push_back(itm);
-                itm.x = nums[i];
+                itm.val = nums[i];
                 itm.count = 1;
             }
         }
@@ -83,65 +45,33 @@ public:
         return items;
     }
 
-    //////////////////////////////////////////////////////////////////////////
-    // list version:
-    //////////////////////////////////////////////////////////////////////////
-    typedef list<int>::iterator ListIter;
-    list<vector<int> > PermuteUnique(vector<int> &nums)
+    void GeneratePermutation(vector<vector<int> >& results, vector<int>& numbers, int idx, vector<ItmCount>& items)
     {
-        sort(nums.begin(), nums.end());
-        list<int> numbers;
-        for (int i=0; i<nums.size(); ++i)
-        {
-            numbers.push_back(nums[i]);
-        }
-        list<vector<int> > results;
-        PermuteUnique(results, numbers.begin(), numbers);
-        return results;
-    }
-
-    void PermuteUnique(list<vector<int> >& results, ListIter& curr, list<int>& numbers)
-    {
-        if(curr == numbers.end())
-        {
-            vector<int> nums(numbers.size());
-            int idx = 0;
-            for (ListIter itr=numbers.begin(); itr!=numbers.end(); ++itr)
-            {
-                nums[idx] = *itr;
-                ++idx;
-            }
-            results.push_back(nums);
+        if (idx == numbers.size()) {
+            results.push_back(numbers);
             return;
         }
 
-        ListIter probe = curr;        
-        ++probe;
-        PermuteUnique(results, probe, numbers);
-        while (probe!=numbers.end())
-        {
-            ListIter last = probe;
-            --last;
-            if (*probe != *curr && *probe != *last)
-            {
-                numbers.insert(curr, *probe); // insert to curr position
-                probe = numbers.erase(probe); // now probe already inc
-                PermuteUnique(results,curr, numbers);
-
-                if (results.size()==7 && *curr==0)
-                {
-                    bool debughere = true;
-                }
-
-                --curr;
-                numbers.insert(probe, *curr);
-                curr = numbers.erase(curr);
-            }
-            else
-            {
-                ++probe;
+        for (int i=0; i<items.size(); ++i) {
+            if (items[i].count > 0) {
+                numbers[idx] = items[i].val;
+                --items[i].count;
+                GeneratePermutation(results, numbers, idx+1, items);
+                ++items[i].count;
             }
         }
+    }
+
+public:
+    //////////////////////////////////////////////////////////////////////////
+    // Most efficient?
+    //////////////////////////////////////////////////////////////////////////
+    vector<vector<int> > UniquePermutations(vector<int> &nums)
+    {
+        vector<vector<int> > results;
+        vector<ItmCount> items = CountUniqueItems(nums);
+        GeneratePermutation(results, nums, 0, items);
+        return results;
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -219,7 +149,6 @@ int main(int argc, char** argv)
 
     Solution solver;
     vector<vector<int> > ansvecs = solver.UniquePermutations(nums);
-    list<vector<int> > anslist = solver.PermuteUnique(nums);
     vector<vector<int> > results = solver.permuteUnique(nums);
 
     set<vector<int> > verify;

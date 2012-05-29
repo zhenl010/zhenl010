@@ -1,6 +1,27 @@
 #include <iostream>
+#include <vector>
 
-const int MATRIX_SIZE = 4; // assume same number of column and rows
+using namespace std;
+
+class Solution {
+public:
+    void rotate(vector<vector<int> > &matrix) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        int idxmax = matrix.size()-1;
+        for(int i=0; i<matrix.size()/2; ++i) {
+            for(int j=i; j<idxmax-i; ++j) {
+                int val = matrix[i][j];
+                matrix[i][j] = matrix[idxmax-j][i];
+                matrix[idxmax-j][i] = matrix[idxmax-i][idxmax-j];
+                matrix[idxmax-i][idxmax-j] = matrix[j][idxmax-i];
+                matrix[j][idxmax-i] = val;
+            }
+        }
+    }
+};
+
+const int MATRIX_SIZE = 3; // assume same number of column and rows
 const int MATRIX_INDEX_MAX = MATRIX_SIZE - 1;
 
 void CoutMatrix(int color_matrix[MATRIX_SIZE][MATRIX_SIZE])
@@ -59,9 +80,13 @@ int main()
     {
         for (int j=0; j<MATRIX_SIZE; ++j)
         {
-            color_matrix[i][j] = i*MATRIX_SIZE+j;
+            color_matrix[i][j] = i*MATRIX_SIZE+j+1;
         }
     }
+
+    CoutMatrix(color_matrix);
+
+    RotateMatrixCW(color_matrix);
 
     CoutMatrix(color_matrix);
 
@@ -69,9 +94,21 @@ int main()
 
     CoutMatrix(color_matrix);
 
-    RotateMatrixCW(color_matrix);
-
-    CoutMatrix(color_matrix);
+    Solution solver;
+    for (int matsize=1; matsize<10; ++matsize)
+    {
+        vector<vector<int> > matrix(matsize);
+        int val = 0;
+        for (int i=0; i<matsize; ++i)
+        {
+            matrix[i].resize(matsize);
+            for (int j=0; j<matsize; ++j)
+            {
+                matrix[i][j] = ++val;
+            }
+        }
+        solver.rotate(matrix);
+    }
 
     return 0;
 }
