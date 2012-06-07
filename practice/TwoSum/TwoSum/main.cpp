@@ -8,9 +8,26 @@
 //////////////////////////////////////////////////////////////////////////
 #include <iostream>
 #include <vector>
+#include <unordered_set>
 #include <unordered_map>
 
 using namespace std;
+
+bool hasSum(int arry[], int n, int target) {
+    if(n<2) return false;
+
+    unordered_set<int> nums;
+    for(int i=0; i<n; ++i) {
+        int reqnum = target - arry[i];
+        unordered_set<int>::iterator itr = nums.find(reqnum);
+        if(itr != nums.end()) {
+            return true;
+        }
+        nums.insert(arry[i]);
+    }
+
+    return false;
+}
 
 class Solution {
 public:
@@ -36,5 +53,10 @@ public:
 };
 
 int main(int argc, char** argv) {
+    int arry[] = { INT_MIN, 0, 1, 2, 2, INT_MAX };
+    int target = -1;
+
+    bool hassum = hasSum(arry, sizeof(arry)/sizeof(int), target);
+
     return 0;
 }
