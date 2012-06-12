@@ -19,21 +19,12 @@ int main(int argc, char** argv)
 
     string inputFileName = DEFAULT_INPUT_FILENAME;
     string outputFilename = DEFAULT_OUTPUT_FILENAME;
-
-    if (argc < 2) 
-    {
+    if (argc < 2)  {
         cout << "Usage: blah.exe filename.xxx" << endl;
-    }
-    else
-    {
+    } else {
         inputFileName = argv[1];
-
-        if (argc == 3)
-        {
-            outputFilename = argv[2];
-        }
+        if (argc == 3) { outputFilename = argv[2]; }
     }
-
     cout << "importing from FILE:   " << inputFileName  << endl;
     cout << "SAVING RESULT TO FILE: " << outputFilename << endl;
 
@@ -53,14 +44,11 @@ int main(int argc, char** argv)
 
     // read input file and process along
     ifstream inFile(inputFileName, ios::in);
-    if (inFile.is_open())
-    {
+    if (inFile.is_open()) {
         string line_str;
         // Read in line by line
-        while (getline(inFile, line_str))
-        {
+        while (getline(inFile, line_str)) {
             stringstream line_stream(line_str);
-
             string haystr;
             line_stream >> haystr;
         }

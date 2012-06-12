@@ -11,8 +11,7 @@ public:
         // DO NOT write int main() function
         int maxsum = A[0];
         int curr = A[0];
-        for (int i=1; i<n; ++i)
-        {
+        for (int i=1; i<n; ++i) {
             curr = curr>0 ? curr+A[i] : A[i];
             if (maxsum < curr) maxsum = curr;
         }
@@ -35,13 +34,11 @@ private:
 
         int cti = lfi + (rti-lfi)/2;
         int lfmin = B[lfi];
-        for (int i=lfi+1; i<=cti; ++i)
-        {
+        for (int i=lfi+1; i<=cti; ++i) {
             if (B[i]<lfmin) lfmin = B[i];
         }
         int rtmax = B[rti];
-        for (int i=cti+1; i<rti; ++i)
-        {
+        for (int i=cti+1; i<rti; ++i) {
             if (B[i]>rtmax) rtmax = B[i];
         }
         rtmax = lfmin<0 ? rtmax-lfmin : rtmax;

@@ -25,6 +25,28 @@ public:
     string getPermutation(int n, int k) {
         // Start typing your C/C++ solution below
         // DO NOT write int main() function
+        int fac = 1;
+        for(int i=2; i<n; ++i) fac*=i;
+        string nums(n, '\0');
+        for(int i=0; i<n; ++i) nums[i] = '1'+i;
+        string result(n, '\0');
+        Permute(result, 0, nums, fac, n, k-1);
+        return result;
+    }
+
+private:
+    void Permute(string& result, int idx, string& nums, int fac, int n, int k) {
+        if(n==1) { result[idx]=nums[0]; return; }
+
+        result[idx] = nums[k/fac];
+        nums.erase(k/fac, 1);
+        Permute(result, idx+1, nums, fac/(n-1), n-1, k%fac);        
+    }
+
+public:
+    string KthPermutation(int n, int k) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
         string str(n, '\0');
         for(int i=0; i<n; ++i) {
             str[i] = '1' + i;
@@ -65,8 +87,8 @@ public:
 int main(int argc, char** argv)
 {
     Solution solver;
-    int n = 4;
-    int k = 5;
+    int n = 3;
+    int k = 2;
 
     string str = solver.getPermutation(n, k);
 
