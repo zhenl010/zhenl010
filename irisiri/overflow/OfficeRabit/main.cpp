@@ -29,7 +29,7 @@ int main() {
     const int sleeptime = 500; // milliseconds
     time_t lasttime = time(NULL);
     TimedKey tkeys[] = {
-        {{'2', false}, lasttime, 15.0},
+        // {{'2', false}, lasttime, 15.0},
         {{'3', false}, lasttime, 300.0},
         {{'4', false}, lasttime, 120.0}
     };

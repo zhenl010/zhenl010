@@ -1,0 +1,46 @@
+friend const BigInt<BUFFER_SIZE> operator-(const BigInt<BUFFER_SIZE>& bignum) {
+    BigInt<BUFFER_SIZE> asw = bignum;
+    asw.NegateSign();
+    return asw;
+}
+
+friend const BigInt<BUFFER_SIZE> operator+(BigInt<BUFFER_SIZE> lfhs, const BigInt<BUFFER_SIZE>& rths) {
+    lfhs += rths;
+    return lfhs;
+}
+
+friend const BigInt<BUFFER_SIZE> operator-(BigInt<BUFFER_SIZE> lfhs, const BigInt<BUFFER_SIZE>& rths) {
+    lfhs -= rths;
+    return lfhs;
+}
+
+friend const BigInt<BUFFER_SIZE> operator*(BigInt<BUFFER_SIZE> lfhs, const BigInt<BUFFER_SIZE>& rths) {
+    lfhs *= rths;
+    return lfhs;
+}
+
+friend const BigInt<BUFFER_SIZE> operator/(BigInt<BUFFER_SIZE> lfhs, const BigInt<BUFFER_SIZE>& rths) {
+    lfhs /= rths;
+    return lfhs;
+}
+
+// comparison
+friend bool operator<(const BigInt<BUFFER_SIZE> lfhs, const BigInt<BUFFER_SIZE>& rths) {
+    return lfhs.IsLessThan(rths);
+}
+
+friend bool operator<=(const BigInt<BUFFER_SIZE> lfhs, const BigInt<BUFFER_SIZE>& rths) {
+    return !(rths<lfhs);
+}
+
+friend bool operator==(const BigInt<BUFFER_SIZE> lfhs, const BigInt<BUFFER_SIZE>& rths) {
+    return !(rths<lfhs || lfhs<rths);
+}
+
+friend bool operator>=(const BigInt<BUFFER_SIZE> lfhs, const BigInt<BUFFER_SIZE>& rths) {
+    return !(lfhs<rths);
+}
+
+friend bool operator>(const BigInt<BUFFER_SIZE> lfhs, const BigInt<BUFFER_SIZE>& rths) {
+    return (rths<lfhs);
+}

@@ -1,0 +1,128 @@
+template<int BUFFER_SIZE>
+void BigInt<BUFFER_SIZE>::ReadIn(const std::string& strin) {
+    std::string numstr = strin;
+    if (*strin.begin() == '-') {
+        sign_=NEGATIVE;
+        numstr.erase(0);
+    } else {
+        sign_=NON_NEGATIVE;
+    }
+    reverse(numstr.begin(), numstr.end());
+
+    used_ = 0;
+    while (!numstr.empty()) {
+        BigInt<BUFFER_SIZE>::DataType ch = StringNumModule(numstr);
+        dat_[used_++] = ch;
+    }
+}
+
+template<int BUFFER_SIZE>
+std::string BigInt<BUFFER_SIZE>::String() const {
+    const std::string NUMBER_BASE_STR = "652"; // NUMBER_BASE inversed order
+    std::string numstr = "0";
+    for (int i=used_-1; i>=0; --i) {
+        numstr = StringNumMultiply(numstr, NUMBER_BASE_STR);
+        std::string curr = ToString(dat_[i]);
+        numstr = StringNumPlus(numstr, curr);
+    }
+    reverse(numstr.begin(), numstr.end());
+    return sign_==NEGATIVE ? '-'+numstr : numstr;
+}
+
+template<int BUFFER_SIZE>
+std::string BigInt<BUFFER_SIZE>::ToString(DataType x) {
+    std::string numstr;
+    while (x>0) {
+        numstr += ('0' + x % 10);
+        x = x / 10;
+    }
+    return numstr;
+}
+
+template<int BUFFER_SIZE>
+std::string BigInt<BUFFER_SIZE>::StringNumPlus(const std::string& numone, const std::string& numtwo) {
+    char carry = 0;
+    char digit = 0;
+    size_t index = 0;
+    std::string numstr(std::max(numone.size(), numtwo.size()), '\0');
+    if (numtwo.size() > numone.size()) {
+        for (; index<numone.size(); ++index) {
+            digit = carry + numtwo[index] - '0' + numone[index] - '0';
+            carry = digit / 10;
+            digit = digit % 10;
+            numstr[index] = '0' + digit;
+        }
+        for (; index<numtwo.size(); ++index) {
+            digit = carry + numtwo[index] - '0';
+            carry = digit / 10;
+            digit = digit % 10;
+            numstr[index] = '0' + digit;
+        }
+    } else { // (curr.size() <= numstr.size())
+        for (; index<numtwo.size(); ++index) {
+            digit = carry + numtwo[index] - '0' + numone[index] - '0';
+            carry = digit / 10;
+            digit = digit % 10;
+            numstr[index] = '0' + digit;
+        }
+        for (; index<numone.size(); ++index) {
+            digit = carry + numone[index] - '0';
+            carry = digit / 10;
+            digit = digit % 10;
+            numstr[index] = '0' + digit;
+        }
+    }
+    if (carry>0) { numstr += ('0'+carry); }
+    return numstr;
+}
+
+template<int BUFFER_SIZE>
+std::string BigInt<BUFFER_SIZE>::StringNumMultiply(const std::string& numone, const std::string& numtwo) {
+    if (numone=="0" || numtwo=="0") { return "0"; }
+
+    std::string number(numone.size()+numtwo.size(), '0');
+    char carry = 0;
+    char digit = 0;
+    for(size_t i=0; i<numone.size(); ++i) {
+        size_t idx = i; // result array index
+        for(size_t j=0; j<numtwo.size(); ++j, ++idx) {
+            digit = carry+(numone[i]-'0')*(numtwo[j]-'0') + number[idx]-'0';
+            carry = digit / 10;
+            number[idx]='0'+ digit%10;
+        }
+
+        while (carry>0) {
+            carry = carry + number[idx] - '0';
+            number[idx] = '0'+ carry%10;
+            carry = carry / 10;
+            ++idx;
+        }
+    }
+
+    return (*number.rbegin()=='0') ? number.substr(0, number.size()-1) : number;
+}
+
+////////////////////////////////////////////////////////////////
+// INTEGER DIVISION BY CONSTANTS (256 in this case)
+////////////////////////////////////////////////////////////////
+template<int BUFFER_SIZE>
+typename BigInt<BUFFER_SIZE>::DataType BigInt<BUFFER_SIZE>::StringNumModule(std::string& numstr) {
+    const std::string NUMBER_BASE_STR = "652"; // NUMBER_BASE reversed order
+    const std::string DENOMINATOR_BASE_STR = "526093"; // pow(25,4) reversed order
+    const int MODULER_SIZE = 8; // pow(25*4, 4)
+
+    std::string recstr = StringNumMultiply(numstr, DENOMINATOR_BASE_STR);
+    numstr = recstr.size()>MODULER_SIZE ? recstr.substr(MODULER_SIZE, recstr.size()-MODULER_SIZE) : std::string();
+
+    std::string modular = recstr.size()>MODULER_SIZE ? recstr.substr(0, MODULER_SIZE) : recstr;
+    while(!modular.empty() && (*modular.rbegin())=='0') { modular.erase(modular.size()-1); }
+    if(modular.empty()) return 0;
+
+    modular = StringNumMultiply(modular, NUMBER_BASE_STR);
+    modular = modular.substr(MODULER_SIZE, modular.size()-MODULER_SIZE);
+    BigInt<BUFFER_SIZE>::DataType val = 0;
+    for(std::string::reverse_iterator rttr=modular.rbegin(); rttr!=modular.rend(); ++rttr) {
+        val = val*10 + (*rttr - '0');
+    }
+    return val;
+}
