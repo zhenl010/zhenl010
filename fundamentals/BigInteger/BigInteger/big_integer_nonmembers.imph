@@ -25,22 +25,26 @@ friend const BigInt<BUFFER_SIZE> operator/(BigInt<BUFFER_SIZE> lfhs, const BigIn
 }
 
 // comparison
-friend bool operator<(const BigInt<BUFFER_SIZE> lfhs, const BigInt<BUFFER_SIZE>& rths) {
+friend bool operator<(const BigInt<BUFFER_SIZE>& lfhs, const BigInt<BUFFER_SIZE>& rths) {
     return lfhs.IsLessThan(rths);
 }
 
-friend bool operator<=(const BigInt<BUFFER_SIZE> lfhs, const BigInt<BUFFER_SIZE>& rths) {
+friend bool operator<=(const BigInt<BUFFER_SIZE>& lfhs, const BigInt<BUFFER_SIZE>& rths) {
     return !(rths<lfhs);
 }
 
-friend bool operator==(const BigInt<BUFFER_SIZE> lfhs, const BigInt<BUFFER_SIZE>& rths) {
+friend bool operator==(const BigInt<BUFFER_SIZE>& lfhs, const BigInt<BUFFER_SIZE>& rths) {
     return !(rths<lfhs || lfhs<rths);
 }
 
-friend bool operator>=(const BigInt<BUFFER_SIZE> lfhs, const BigInt<BUFFER_SIZE>& rths) {
+friend bool operator!=(const BigInt<BUFFER_SIZE>& lfhs, const BigInt<BUFFER_SIZE>& rths) {
+    return !(lfhs==rths);
+}
+
+friend bool operator>=(const BigInt<BUFFER_SIZE>& lfhs, const BigInt<BUFFER_SIZE>& rths) {
     return !(lfhs<rths);
 }
 
-friend bool operator>(const BigInt<BUFFER_SIZE> lfhs, const BigInt<BUFFER_SIZE>& rths) {
+friend bool operator>(const BigInt<BUFFER_SIZE>& lfhs, const BigInt<BUFFER_SIZE>& rths) {
     return (rths<lfhs);
 }

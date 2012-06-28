@@ -15,27 +15,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="big_integer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="big_integer_nonmembers.imph">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="big_integer_io.imph">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="split_bill_combinations.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="big_integer_string.imph">
-      <Filter>Header Files</Filter>
-    </None>
   </ItemGroup>
 </Project>

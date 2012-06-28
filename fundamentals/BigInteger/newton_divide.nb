@@ -1,0 +1,120 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 8.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[      3402,        110]
+NotebookOptionsPosition[      2946,         89]
+NotebookOutlinePosition[      3289,        104]
+CellTagsIndexPosition[      3246,        101]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"testin", "=", 
+   RowBox[{"65535", "*", "256"}]}], ";", " ", 
+  RowBox[{"Print", "[", 
+   RowBox[{"\"\<testin = \>\"", ",", " ", "testin"}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"mult", "=", "41"}], ";", " ", 
+  RowBox[{"Print", "[", 
+   RowBox[{"\"\<mult = \>\"", ",", " ", "mult"}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"beta", " ", "=", " ", "256"}], ";", " ", 
+  RowBox[{"Print", "[", 
+   RowBox[{"\"\<beta^4 = \>\"", ",", " ", 
+    RowBox[{"beta", "^", "4"}]}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"rec0", " ", "=", " ", 
+   RowBox[{"N", "[", 
+    RowBox[{
+     RowBox[{"beta", "^", "4"}], "/", "mult"}], "]"}]}], ";", " ", 
+  RowBox[{"Print", "[", 
+   RowBox[{"\"\<rec0 = \>\"", ",", " ", "rec0"}], 
+   "]"}]}], "\[IndentingNewLine]"}], "Input",
+ CellChangeTimes->{{3.5496829813286896`*^9, 3.549683024723795*^9}, {
+  3.5496830768762894`*^9, 3.549683166407589*^9}, {3.549683212694209*^9, 
+  3.5496833736139345`*^9}},
+ FontFamily->"Courier New",
+ FontSize->16],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"testin = \"\>", "\[InvisibleSpace]", "16776960"}],
+  SequenceForm["testin = ", 16776960],
+  Editable->False]], "Print",
+ CellChangeTimes->{{3.5496832296692266`*^9, 3.549683240824955*^9}, 
+   3.549683288589656*^9, {3.549683323502328*^9, 3.5496833744749794`*^9}}],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"mult = \"\>", "\[InvisibleSpace]", "41"}],
+  SequenceForm["mult = ", 41],
+  Editable->False]], "Print",
+ CellChangeTimes->{{3.5496832296692266`*^9, 3.549683240824955*^9}, 
+   3.549683288589656*^9, {3.549683323502328*^9, 3.5496833744769793`*^9}}],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"beta^4 = \"\>", "\[InvisibleSpace]", "4294967296"}],
+  SequenceForm["beta^4 = ", 4294967296],
+  Editable->False]], "Print",
+ CellChangeTimes->{{3.5496832296692266`*^9, 3.549683240824955*^9}, 
+   3.549683288589656*^9, {3.549683323502328*^9, 3.549683374477979*^9}}],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"rec0 = \"\>", "\[InvisibleSpace]", "1.0475529990243903`*^8"}],
+  SequenceForm["rec0 = ", 1.0475529990243903`*^8],
+  Editable->False]], "Print",
+ CellChangeTimes->{{3.5496832296692266`*^9, 3.549683240824955*^9}, 
+   3.549683288589656*^9, {3.549683323502328*^9, 3.549683374477979*^9}}]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1488, 827},
+WindowMargins->{{Automatic, 7}, {Automatic, -2}},
+FrontEndVersion->"8.0 for Microsoft Windows (64-bit) (October 6, 2011)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[579, 22, 1057, 29, 126, "Input"],
+Cell[CellGroupData[{
+Cell[1661, 55, 310, 6, 23, "Print"],
+Cell[1974, 63, 294, 6, 23, "Print"],
+Cell[2271, 71, 312, 6, 23, "Print"],
+Cell[2586, 79, 332, 6, 23, "Print"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
+

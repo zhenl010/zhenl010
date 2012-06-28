@@ -1,4 +1,4 @@
-template<int BUFFER_SIZE>
+template<unsigned int BUFFER_SIZE>
 void BigInt<BUFFER_SIZE>::ReadIn(const std::string& strin) {
     std::string numstr = strin;
     if (*strin.begin() == '-') {
@@ -16,7 +16,7 @@ void BigInt<BUFFER_SIZE>::ReadIn(const std::string& strin) {
     }
 }
 
-template<int BUFFER_SIZE>
+template<unsigned int BUFFER_SIZE>
 std::string BigInt<BUFFER_SIZE>::String() const {
     const std::string NUMBER_BASE_STR = "652"; // NUMBER_BASE inversed order
     std::string numstr = "0";
@@ -26,10 +26,10 @@ std::string BigInt<BUFFER_SIZE>::String() const {
         numstr = StringNumPlus(numstr, curr);
     }
     reverse(numstr.begin(), numstr.end());
-    return sign_==NEGATIVE ? '-'+numstr : numstr;
+    return IsNegative() ? '-'+numstr : numstr;
 }
 
-template<int BUFFER_SIZE>
+template<unsigned int BUFFER_SIZE>
 std::string BigInt<BUFFER_SIZE>::ToString(DataType x) {
     std::string numstr;
     while (x>0) {
@@ -39,7 +39,7 @@ std::string BigInt<BUFFER_SIZE>::ToString(DataType x) {
     return numstr;
 }
 
-template<int BUFFER_SIZE>
+template<unsigned int BUFFER_SIZE>
 std::string BigInt<BUFFER_SIZE>::StringNumPlus(const std::string& numone, const std::string& numtwo) {
     char carry = 0;
     char digit = 0;
@@ -76,7 +76,7 @@ std::string BigInt<BUFFER_SIZE>::StringNumPlus(const std::string& numone, const 
     return numstr;
 }
 
-template<int BUFFER_SIZE>
+template<unsigned int BUFFER_SIZE>
 std::string BigInt<BUFFER_SIZE>::StringNumMultiply(const std::string& numone, const std::string& numtwo) {
     if (numone=="0" || numtwo=="0") { return "0"; }
 
@@ -105,7 +105,7 @@ std::string BigInt<BUFFER_SIZE>::StringNumMultiply(const std::string& numone, co
 ////////////////////////////////////////////////////////////////
 // INTEGER DIVISION BY CONSTANTS (256 in this case)
 ////////////////////////////////////////////////////////////////
-template<int BUFFER_SIZE>
+template<unsigned int BUFFER_SIZE>
 typename BigInt<BUFFER_SIZE>::DataType BigInt<BUFFER_SIZE>::StringNumModule(std::string& numstr) {
     const std::string NUMBER_BASE_STR = "652"; // NUMBER_BASE reversed order
     const std::string DENOMINATOR_BASE_STR = "526093"; // pow(25,4) reversed order

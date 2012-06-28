@@ -6,6 +6,8 @@
 // function input parameters use reference and not value (copy)
 // Thus (-x) behave differently from naiive integer types!!! (intentional)
 //////////////////////////////////////////////////////////////////////////
+// UNDERLINING DATA TYPE: unsigned char (strong assumption in this implementation)
+//////////////////////////////////////////////////////////////////////////
 #ifndef BIG_INTEGER_H_
 #define BIG_INTEGER_H_
 
@@ -17,21 +19,36 @@
 namespace augment_data_structure {
 //////////////////////////////////////////////////////////////////////////
 
-template<int BUFFER_SIZE=1024>
+inline unsigned int ilog2(unsigned int x) 
+{
+    register unsigned int l=0;
+    if(x >= 1<<16) { x>>=16; l|=16; }
+    if(x >= 1<<8) { x>>=8; l|=8; }
+    if(x >= 1<<4) { x>>=4; l|=4; }
+    if(x >= 1<<2) { x>>=2; l|=2; }
+    if(x >= 1<<1) l|=1;
+    return l;
+}
+
+template<unsigned int BUFFER_SIZE=1024>
 class BigInt {
 public:
-    typedef unsigned char DataType;
+    typedef unsigned char DataType; // UNDERLINING DATA TYPE
     typedef BigInt<BUFFER_SIZE>& reference;
     typedef const BigInt<BUFFER_SIZE>& const_reference;
-    static const short NUMBER_BASE = UCHAR_MAX + 1;
+    static const unsigned short NUMBER_BASE = UCHAR_MAX + 1;
+    static const unsigned short NUMBER_BASE_HALF = NUMBER_BASE / 2;
+    static const unsigned short NUMBER_BASE_BITS = sizeof(DataType) << 3;
+    static const unsigned long long int DIVIDE_BASE_CONST = ULONG_MAX;
+    static const unsigned int DIVIDE_SHIFT_CONST = 4;
 
 public:
     // Constructs zero.
     BigInt();
 
     // Constructors from primitive integer types
-    BigInt(unsigned long  x);
-    BigInt(         long  x);
+    BigInt(unsigned long long int x);
+    BigInt(         long long int x);
     BigInt(unsigned int   x);
     BigInt(         int   x);
     BigInt(unsigned short x);
@@ -42,9 +59,12 @@ public:
     std::string String() const;
 
     // Utility functions:
-    int Size() { return used_; }
-    void NegateSign() { sign_ = (sign_==NEGATIVE) ? NON_NEGATIVE : NEGATIVE; }
+    int ByteSize() const { return used_; }
+    bool IsNegative() const { return sign_==NEGATIVE; }
+    void NegateSign() { sign_ = IsNegative() ? NON_NEGATIVE : NEGATIVE; }
     bool IsLessThan(const_reference) const;
+    void ShiftLeft(unsigned int); // Logical shift
+    void ShiftRight(unsigned int); // Logical shift
 
     // Arithmetic
     reference operator +=(const_reference);
@@ -69,7 +89,7 @@ public:
     //////////////////////////////////////////////////////////////////////////
     #include "big_integer_io.imph"
 
-private:            
+private:
     enum Sign { NEGATIVE = -1, NON_NEGATIVE = 1 };
     enum MAG_COMPARED { MAG_LESS = -1, MAG_EQUAL = 0, MAG_LARGER = 1 };
 
@@ -80,10 +100,16 @@ private:
     static DataType StringNumModule(std::string&); // NON-NEGATIVES and const denominator 256
 
     // Arithmetics Helpers
-    MAG_COMPARED MagCompare(const_reference); // return true if rths data larger
+    MAG_COMPARED MagCompare(const_reference) const; // return true if rths data larger
+    void ConstructBuffer(unsigned long long int);
     void UniAdd(const_reference);
     void UniSubtract(const_reference);
+    // Multiplications
     void UniMultiplyGradeSchool(const_reference);
+    // Divisions
+    void UniBaseDivide(const_reference);
+    void UniRecursiveDivide(const_reference);
+    void UniDivideNewton(const_reference);
 
     // Enumeration for the sign of a BigInt.
     Sign sign_;
@@ -91,47 +117,57 @@ private:
     DataType dat_[BUFFER_SIZE];
 };
 
-// template<int BUFFER_SIZE> const BigInt<BUFFER_SIZE> operator+(BigInt<BUFFER_SIZE>, const BigInt<BUFFER_SIZE>&) {
-//     lfhs += rths;
-//     return lfhs;
-// }
-
-// template<int BUFFER_SIZE>
-// inline const BigInt<BUFFER_SIZE> operator+(BigInt<BUFFER_SIZE> lfhs, const BigInt<BUFFER_SIZE>& rths) {
-//     lfhs += rths;
-//     return lfhs;
-// }
-
 //////////////////////////////////////////////////////////////////////////
 // Core Functions Implementation below:
 //////////////////////////////////////////////////////////////////////////
 
-template<int BUFFER_SIZE>
+template<unsigned int BUFFER_SIZE>
 BigInt<BUFFER_SIZE>::BigInt()
 : sign_(NON_NEGATIVE), used_(0) {
 }
 
-template<int BUFFER_SIZE>
-BigInt<BUFFER_SIZE>::BigInt(int x)
-: sign_(x<0 ? NEGATIVE : NON_NEGATIVE), used_(0) {
-    unsigned int val = sign_==NEGATIVE ? -(x+1) : x-1;
-    ++val;
-    while (val>0) {
-        DataType curr = val % NUMBER_BASE;
-        dat_[used_++] = curr;
-        val = val / NUMBER_BASE;
-    }
+template<unsigned int BUFFER_SIZE>
+BigInt<BUFFER_SIZE>::BigInt(unsigned long long int x)
+: sign_(NON_NEGATIVE), used_(0) {
+    ConstructBuffer(x);
 }
 
-template<int BUFFER_SIZE>
+template<unsigned int BUFFER_SIZE>
+BigInt<BUFFER_SIZE>::BigInt(int x)
+: sign_(x<0 ? NEGATIVE : NON_NEGATIVE), used_(0) {
+    unsigned long long int val = IsNegative() ? -(x+1) : x-1;
+    ++val;
+    ConstructBuffer(val);
+}
+
+template<unsigned int BUFFER_SIZE>
 bool BigInt<BUFFER_SIZE>::IsLessThan(const_reference rths) const {
-    if (sign_==NEGATIVE && rths.sign_==NON_NEGATIVE) return true;
+    if (IsNegative() && rths.sign_==NON_NEGATIVE) return true;
     if (sign_==NON_NEGATIVE && rths.sign_==NON_NEGATIVE) return MagCompare(rths)==MAG_LESS;
-    if (sign_==NEGATIVE && rths.sign_==NEGATIVE) return MagCompare(rths)==MAG_LARGER;
+    if (IsNegative() && rths.IsNegative()) return MagCompare(rths)==MAG_LARGER;
     return false;
 }
 
-template<int BUFFER_SIZE>
+template<unsigned int BUFFER_SIZE>
+void BigInt<BUFFER_SIZE>::ShiftLeft(unsigned int num) {  // Logical shift
+    assert(used_+num <= BUFFER_SIZE); // LOSING ACCURACY not ALLOWED!!!
+    memmove(dat_+num, dat_, used_);
+    memset(dat_, '\0', num);
+    used_ += num;
+}
+
+template<unsigned int BUFFER_SIZE>
+void BigInt<BUFFER_SIZE>::ShiftRight(unsigned int num) { // Logical shift
+    if (num < (unsigned int)used_) {
+        used_ -= num;
+        // memmove(&dat_[0], &dat_[num], used_);
+        memmove(dat_, dat_+num, used_);
+    } else {
+        used_ = 0;
+    }
+}
+
+template<unsigned int BUFFER_SIZE>
 typename BigInt<BUFFER_SIZE>::reference BigInt<BUFFER_SIZE>::operator+=(const_reference rths) {
     if (sign_ == rths.sign_) {
         UniAdd(rths);
@@ -158,7 +194,7 @@ typename BigInt<BUFFER_SIZE>::reference BigInt<BUFFER_SIZE>::operator+=(const_re
     return *this;
 }
 
-template<int BUFFER_SIZE>
+template<unsigned int BUFFER_SIZE>
 typename BigInt<BUFFER_SIZE>::reference BigInt<BUFFER_SIZE>::operator-=(const_reference rths) {
     NegateSign();
     operator +=(rths);
@@ -167,7 +203,7 @@ typename BigInt<BUFFER_SIZE>::reference BigInt<BUFFER_SIZE>::operator-=(const_re
     return *this;
 }
 
-template<int BUFFER_SIZE>
+template<unsigned int BUFFER_SIZE>
 typename BigInt<BUFFER_SIZE>::reference BigInt<BUFFER_SIZE>::operator*=(const_reference rths) {
     if (used_==0 || rths.used_==0) { used_=0; return *this; } // ZERO
 
@@ -177,12 +213,21 @@ typename BigInt<BUFFER_SIZE>::reference BigInt<BUFFER_SIZE>::operator*=(const_re
     return *this;
 }
 
+template<unsigned int BUFFER_SIZE>
+typename BigInt<BUFFER_SIZE>::reference BigInt<BUFFER_SIZE>::operator/=(const_reference rths) {
+    sign_ = (sign_==rths.sign_) ? NON_NEGATIVE : NEGATIVE;
+    // UniDivideNewton(rths);
+    UniBaseDivide(rths);
+
+    return *this;
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Helper functions:
 //////////////////////////////////////////////////////////////////////////
 
-template<int BUFFER_SIZE>
-typename BigInt<BUFFER_SIZE>::MAG_COMPARED BigInt<BUFFER_SIZE>::MagCompare(const_reference rths) {
+template<unsigned int BUFFER_SIZE>
+typename BigInt<BUFFER_SIZE>::MAG_COMPARED BigInt<BUFFER_SIZE>::MagCompare(const_reference rths) const {
     if (used_ < rths.used_) return MAG_LESS;
     if (rths.used_ < used_) return MAG_LARGER;
     for (int i=used_-1; i>=0; --i) {
@@ -195,7 +240,16 @@ typename BigInt<BUFFER_SIZE>::MAG_COMPARED BigInt<BUFFER_SIZE>::MagCompare(const
     return MAG_EQUAL;
 }
 
-template<int BUFFER_SIZE>
+template<unsigned int BUFFER_SIZE>
+void BigInt<BUFFER_SIZE>::ConstructBuffer(unsigned long long int val) {
+    while (val>0) {
+        DataType curr = val % NUMBER_BASE;
+        dat_[used_++] = curr;
+        val = val / NUMBER_BASE;
+    }
+}
+
+template<unsigned int BUFFER_SIZE>
 void BigInt<BUFFER_SIZE>::UniAdd(const_reference rths) {
     unsigned short cursum = 0;
     DataType digit = 0;
@@ -241,17 +295,17 @@ void BigInt<BUFFER_SIZE>::UniAdd(const_reference rths) {
     }
 }
 
-template<int BUFFER_SIZE>
+template<unsigned int BUFFER_SIZE>
 void BigInt<BUFFER_SIZE>::UniSubtract(const_reference rths) {
     assert(MagCompare(rths) != MAG_LESS);
 
-    DataType curr = 0;
+    short int curr = 0;
     DataType digit = 0;
     DataType borrow = 0;    
     for (int index = 0; index<rths.used_; ++index) {
         curr = dat_[index] - borrow;
         if (curr < rths.dat_[index]) {
-            digit = curr - (UCHAR_MAX - rths.dat_[index] + 1);
+            digit = curr + (UCHAR_MAX - rths.dat_[index] + 1);
             borrow = 1;
         } else {
             digit = curr - rths.dat_[index];
@@ -264,10 +318,9 @@ void BigInt<BUFFER_SIZE>::UniSubtract(const_reference rths) {
     for (int i=used_-1; i>=0 && dat_[i]==0; --i, --used_) {}
 }
 
-template<int BUFFER_SIZE>
+template<unsigned int BUFFER_SIZE>
 void BigInt<BUFFER_SIZE>::UniMultiplyGradeSchool(const_reference rths) {
     // if (used_==0 || rths.used_==0) { used_=0; return; }
-
     BigInt<BUFFER_SIZE> lfhs(*this);
     memset(&dat_[0], 0, BUFFER_SIZE);
 
@@ -293,6 +346,85 @@ void BigInt<BUFFER_SIZE>::UniMultiplyGradeSchool(const_reference rths) {
         }
         used_ = idx;
     }
+}
+
+template<unsigned int BUFFER_SIZE>
+void BigInt<BUFFER_SIZE>::UniBaseDivide(const_reference rths) {
+    if ((*this)<(rths)) { used_=0; return; } // divider larger than divident
+    if (rths.dat_[rths.used_-1] < NUMBER_BASE_HALF) { // normalize if needed
+        int nfactor = 1 << (NUMBER_BASE_BITS - 1 - ilog2(rths.dat_[rths.used_-1]));
+        operator *=(nfactor);
+        return UniBaseDivide(rths * nfactor);
+    }
+
+    BigInt<BUFFER_SIZE> lfhs(*this);
+    int numds = lfhs.used_ - rths.used_;
+    BigInt<BUFFER_SIZE> bignfactor = rths;
+    bignfactor.ShiftLeft(numds);
+    if (bignfactor < lfhs) {
+        used_ = numds + 1;
+        dat_[numds] = 1;
+        lfhs -= bignfactor;
+    } else {
+        used_ = numds;
+        dat_[numds] = 0;
+    }
+
+    int lfsize = lfhs.used_;
+    for (int j=numds-1; j>=0; --j) {
+        unsigned short qjstar = (NUMBER_BASE*lfhs.dat_[lfsize-numds+j] + lfhs.dat_[lfsize-numds+j-1])
+            / rths.dat_[rths.used_-1];
+        dat_[j] = qjstar<UCHAR_MAX ? qjstar : UCHAR_MAX;
+        bignfactor.ShiftRight(1);
+        lfhs -= dat_[j] * bignfactor;
+        while (lfhs.IsNegative()) {
+            --dat_[j];
+            lfhs += bignfactor;
+        }
+    }
+    // lfhs is the modular
+}
+
+template<unsigned int BUFFER_SIZE>
+void BigInt<BUFFER_SIZE>::UniRecursiveDivide(const_reference rths) {
+    BigInt<BUFFER_SIZE> lfhs(*this);
+    int numds = lfhs.used_ - rths.used_;
+    if (numds<2) { return UniBaseDivide(rths); }
+
+
+}
+
+template<unsigned int BUFFER_SIZE>
+void BigInt<BUFFER_SIZE>::UniDivideNewton(const_reference rths) {
+    // z0
+    unsigned long long int esti = rths.used_>1 ? 
+        rths.dat_[rths.used_-1]*NUMBER_BASE+rths.dat_[rths.used_-2] : rths.dat_[rths.used_-1];
+    BigInt<BUFFER_SIZE> reci = (DIVIDE_BASE_CONST / esti);
+    reci.ShiftRight(DIVIDE_SHIFT_CONST-2);
+    int negpow = 2;
+    cout << "rec0: " << reci << endl;
+    //
+    int numit = ilog2(rths.used_ + 1)+6;
+    BigInt<BUFFER_SIZE> sktwo;
+    BigInt<BUFFER_SIZE> omiga;
+    for (int i=0; i<numit; ++i) {
+        omiga = rths*reci;
+        // truncate
+        omiga *= reci;
+        // truncate
+
+        sktwo = reci + reci;
+        sktwo.ShiftLeft(negpow);
+        reci = sktwo - omiga;
+
+        cout << "rec" << i+1 << ": " << reci << endl;
+
+        negpow += negpow;
+    }
+
+    // UniMultiplyGradeSchool(reci);
+    UniMultiplyGradeSchool(reci);
+    ShiftRight(negpow);
 }
 
 //////////////////////////////////////////////////////////////////////////
