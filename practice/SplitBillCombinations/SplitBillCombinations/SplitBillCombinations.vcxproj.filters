@@ -13,17 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="TemplateImpl">
-      <UniqueIdentifier>{b92d6611-e226-4ec1-8235-a58cbdcd04f7}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="big_integer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="big_integer_nonmembers.imph">
-      <Filter>TemplateImpl</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -31,17 +20,17 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="big_integer_divisions.imph">
-      <Filter>TemplateImpl</Filter>
-    </None>
-    <None Include="big_integer_string.imph">
-      <Filter>TemplateImpl</Filter>
-    </None>
-    <None Include="big_integer_multiplications.imph">
-      <Filter>TemplateImpl</Filter>
-    </None>
-    <None Include="big_integer_addition_substractions.imph">
-      <Filter>TemplateImpl</Filter>
-    </None>
+    <ClInclude Include="big_integer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="split_bill_combinations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="big_integer_divisions.imph" />
+    <None Include="big_integer_io.imph" />
+    <None Include="big_integer_nonmembers.imph" />
+    <None Include="big_integer_string.imph" />
   </ItemGroup>
 </Project>

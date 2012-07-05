@@ -22,7 +22,7 @@ const int CONCISE_CHOICES = NUM_CHOICES - 1;
 
 class BillCombinationNumber {
 public:
-    static const unsigned int BIG_NUMBER_SIZE = 1020;
+    static const unsigned int BIG_NUMBER_SIZE = 26;
 
     // recursive version very very slow!!!
     augment_data_structure::BigInt<BIG_NUMBER_SIZE> FindNumWays(int val, int choices) {

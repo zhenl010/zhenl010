@@ -1,0 +1,140 @@
+﻿template<unsigned int BUFFER_SIZE>
+void BigInt<BUFFER_SIZE>::UniDivide(const_reference rths) {
+    UniRecursiveDivide(rths);
+}
+
+template<unsigned int BUFFER_SIZE>
+void BigInt<BUFFER_SIZE>::UniBaseDivide(const_reference rths) {
+    if ((*this) < rths) { used_=0; return; } // divider larger than divident
+    if (rths.dat_[rths.ByteSize()-1] < NUMBER_BASE_HALF) { // normalize if needed
+        int nfactor = 1 << (NUMBER_BASE_BITS - 1 - ilog2(rths.dat_[rths.ByteSize()-1]));
+        operator*=(nfactor);
+        return UniBaseDivide(rths * nfactor);
+    }
+
+    BigInt<BUFFER_SIZE> lfhs(*this);
+    int numds = lfhs.ByteSize() - rths.ByteSize();
+    BigInt<BUFFER_SIZE> bignfactor = rths;
+    bignfactor.ShiftLeft(numds);
+    if (bignfactor < lfhs) {
+        used_ = numds + 1;
+        dat_[numds] = 1;
+        lfhs -= bignfactor;
+    } else {
+        used_ = numds;
+        dat_[numds] = 0;
+    }
+
+    int lfsize = lfhs.ByteSize();
+    for (int j=numds-1; j>=0; --j) {
+        unsigned short qjstar = (NUMBER_BASE*lfhs.dat_[lfsize-numds+j] + lfhs.dat_[lfsize-numds+j-1])
+            / rths.dat_[rths.ByteSize()-1];
+        dat_[j] = qjstar<UCHAR_MAX ? qjstar : UCHAR_MAX;
+        bignfactor.ShiftRight(1);
+        lfhs -= dat_[j] * bignfactor;
+        while (lfhs.IsNegative()) {
+            --dat_[j];
+            lfhs += bignfactor;
+        }
+    }
+}
+
+template<unsigned int BUFFER_SIZE>
+void BigInt<BUFFER_SIZE>::UniRecursiveDivide(const_reference rths) {
+    BigInt<BUFFER_SIZE> lfhs(*this);
+    BigInt<BUFFER_SIZE> carry(*this);
+    int numds = lfhs.ByteSize() - rths.ByteSize();
+    // (*this) is quotient = 0; Now init it to be zero
+    used_ = 0;
+    BigInt<BUFFER_SIZE> partnum;
+    while (rths.ByteSize() < numds) {
+        // (q, r) ← RecursiveDivRem(A div βm−n,B) ⊲ 2n by n division
+        lfhs.ShiftRight(numds-rths.ByteSize());
+        partnum = lfhs;
+        partnum.UniRecursiveDivideSpecial(rths);
+        // Q ← Qβn + q
+        ShiftLeft(rths.ByteSize());
+        operator+=(partnum);
+        // A ← r*β(m−n) + A mod β(m−n)
+        lfhs = lfhs - partnum * rths;
+        lfhs.ShiftLeft(numds-rths.ByteSize());
+        carry.ByteResize(numds-rths.ByteSize());
+        lfhs += carry;
+        carry = lfhs;
+        numds -= rths.ByteSize();
+    }
+    partnum = lfhs;
+    partnum.UniRecursiveDivideSpecial(rths);
+    ShiftLeft(rths.ByteSize());
+    operator+=(partnum);
+}
+
+template<unsigned int BUFFER_SIZE>
+void BigInt<BUFFER_SIZE>::UniRecursiveDivideSpecial(const_reference rths) {
+    // UniBaseDivide(rths);
+    int numds = ByteSize() - rths.ByteSize();
+    if (numds < DIVIDE_BASECASE_CONST) { return UniBaseDivide(rths); }
+
+    BigInt<BUFFER_SIZE> lfhs(*this);
+    int k = numds/2; // m/2
+    BigInt<BUFFER_SIZE> bone = rths >> k; // B1 ← B div βk,
+    BigInt<BUFFER_SIZE> bzero = ModBetaDigits(rths, k); // B0 ← B mod βk
+    // (Q1,R1) ← RecursiveDivRem(A div β2k,B1)
+    BigInt<BUFFER_SIZE> aone = lfhs >> (2*k);
+    BigInt<BUFFER_SIZE> qone = aone;
+    qone.UniRecursiveDivideSpecial(bone); // call specific divide function
+    BigInt<BUFFER_SIZE> rone = aone - bone*qone;
+    // A′ ← R1β2k + (A mod β2k) − Q1B0βk
+    BigInt<BUFFER_SIZE> aprime_one = (rone<<(2*k)) + ModBetaDigits(lfhs,2*k) - ((qone*bzero)<<k);
+    // while A′ < 0 do Q1 ← Q1 − 1, A′ ← A′ + βkB
+    while (aprime_one.IsNegative()) {
+        qone -= 1;
+        aprime_one += (rths<<k);
+    }
+    // (Q0,R0) ← RecursiveDivRem(A′ div βk,B1)
+    BigInt<BUFFER_SIZE> azero = aprime_one>>k;
+    BigInt<BUFFER_SIZE> qzero = azero;
+    qzero.UniRecursiveDivideSpecial(bone); // call specific divide function
+    BigInt<BUFFER_SIZE> rzero = azero - bone*qzero;
+    // A′′ ← R0βk + (A′ mod βk) − Q0B0
+    BigInt<BUFFER_SIZE> aprime_two = (rzero<<k) + ModBetaDigits(aprime_one,k) - (qzero*bzero);
+    // while A′′ < 0 do Q0 ← Q0 − 1, A′′ ← A′′ + B
+    while (aprime_two.IsNegative()) {
+        qzero -= 1;
+        aprime_two += rths;
+    }
+    // return Q := Q1βk + Q0, R := A′′.
+    operator=((qone<<k) + qzero);
+}
+
+template<unsigned int BUFFER_SIZE>
+void BigInt<BUFFER_SIZE>::UniNewtonDivide(const_reference rths) {
+    // z0
+    unsigned long long int esti = rths.ByteSize()>1 ? 
+        rths.dat_[rths.ByteSize()-1]*NUMBER_BASE+rths.dat_[rths.ByteSize()-2] : rths.dat_[rths.ByteSize()-1];
+    BigInt<BUFFER_SIZE> reci = (DIVIDE_BASE_CONST / esti);
+    reci.ShiftRight(DIVIDE_SHIFT_CONST-2);
+    int negpow = 2;
+    cout << "rec0: " << reci << endl;
+    //
+    int numit = ilog2(rths.ByteSize() + 1)+6;
+    BigInt<BUFFER_SIZE> sktwo;
+    BigInt<BUFFER_SIZE> omiga;
+    for (int i=0; i<numit; ++i) {
+        omiga = rths*reci;
+        // truncate
+        omiga *= reci;
+        // truncate
+
+        sktwo = reci + reci;
+        sktwo.ShiftLeft(negpow);
+        reci = sktwo - omiga;
+
+        cout << "rec" << i+1 << ": " << reci << endl;
+
+        negpow += negpow;
+    }
+
+    UniMultiply(reci);
+    ShiftRight(negpow);
+}

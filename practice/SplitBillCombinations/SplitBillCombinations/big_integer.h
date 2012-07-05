@@ -39,12 +39,9 @@ public:
     static const unsigned short NUMBER_BASE = UCHAR_MAX + 1;
     static const unsigned short NUMBER_BASE_HALF = NUMBER_BASE / 2;
     static const unsigned short NUMBER_BASE_BITS = sizeof(DataType) << 3;
-    static const int MUL_THRESHOLD_BASE = 8;
-    static const int MUL_THRESHOLD_KARATSUBA = 64;
-    static const int MUL_THRESHOLD_TOOMCOOK = 6400;
     static const unsigned long long int DIVIDE_BASE_CONST = ULONG_MAX;
     static const unsigned int DIVIDE_SHIFT_CONST = 4;
-    static const unsigned int DIVIDE_BASECASE_CONST = 4; // Used by RecursiveDivide
+    static const unsigned int DIVIDE_BASECASE_CONST = 3; // Used by RecursiveDivide
 
 public:
     // Constructs zero.
@@ -63,10 +60,8 @@ public:
     std::string String() const;
 
     // Utility functions:
-    void SetAsZero() { used_=0; }
-    bool IsZero() const { return used_==0; }
-    bool IsNegative() const { return sign_==NEGATIVE && (!IsZero()); } // ZERO is non-negative
-    void NegateSign() { sign_ = IsZero() ? NON_NEGATIVE : (IsNegative() ? NON_NEGATIVE : NEGATIVE); }
+    bool IsNegative() const { return sign_==NEGATIVE; }
+    void NegateSign() { sign_ = IsNegative() ? NON_NEGATIVE : NEGATIVE; }
     bool IsLessThan(const_reference) const;
     int ByteSize() const { return used_; }
     void ByteResize(unsigned int k) { used_ = (used_>(int)k) ? (int)k : used_; }
@@ -87,13 +82,18 @@ public:
 
 public:
     //////////////////////////////////////////////////////////////////////////
-    // Non-Member IO and arithmetic friend operators (allow implicit conversion):
+    // Non-Member arithmetic operators (allow implicit conversion):
     //////////////////////////////////////////////////////////////////////////
     #include "big_integer_nonmembers.imph"
 
+    //////////////////////////////////////////////////////////////////////////
+    // Big Integer IO:
+    //////////////////////////////////////////////////////////////////////////
+    #include "big_integer_io.imph"
+
 private:
-    enum Sign { NEGATIVE, NON_NEGATIVE };
-    enum MAG_COMPARED { MAG_LESS, MAG_EQUAL, MAG_LARGER };
+    enum Sign { NEGATIVE = -1, NON_NEGATIVE = 1 };
+    enum MAG_COMPARED { MAG_LESS = -1, MAG_EQUAL = 0, MAG_LARGER = 1 };
 
     // String related Helper functions
     static std::string ToString(DataType x);
@@ -107,16 +107,8 @@ private:
     void UniAdd(const_reference);
     void UniSubtract(const_reference);
     // Multiplications
-    void UniMultiply(const_reference);
     void UniMultiplyGradeSchool(const_reference);
-    void UniMultiplyToomCook2(const_reference); // Karatsuba
-    void UniMultiplyToomCook2p5(const_reference);
-    void UniMultiplyToomCook3(const_reference);
-    unsigned int UniToomCook3Inter(BigInt<BUFFER_SIZE> mul_poly[5], const BigInt<BUFFER_SIZE>&, const BigInt<BUFFER_SIZE>&);
-    void UniToomCook3Coeff(BigInt<BUFFER_SIZE> coeffs[5], const BigInt<BUFFER_SIZE>&, unsigned int);
-    void UniMultiplySchonhageStrassen(const_reference);
     // Divisions
-    void UniDivide(const_reference);
     void UniBaseDivide(const_reference);
     void UniRecursiveDivide(const_reference);
     void UniRecursiveDivideSpecial(const_reference); // (A.ByteSize - B.ByteSize) <= B.ByteSize
@@ -153,15 +145,15 @@ BigInt<BUFFER_SIZE>::BigInt(int x)
 
 template<unsigned int BUFFER_SIZE>
 bool BigInt<BUFFER_SIZE>::IsLessThan(const_reference rths) const {
-    if (IsNegative() && (!rths.IsNegative())) return true;
+    if (IsNegative() && rths.sign_==NON_NEGATIVE) return true;
+    if (sign_==NON_NEGATIVE && rths.sign_==NON_NEGATIVE) return MagCompare(rths)==MAG_LESS;
     if (IsNegative() && rths.IsNegative()) return MagCompare(rths)==MAG_LARGER;
-    if ((!IsNegative()) && (!rths.IsNegative())) return MagCompare(rths)==MAG_LESS;
     return false;
 }
 
 template<unsigned int BUFFER_SIZE>
 void BigInt<BUFFER_SIZE>::ShiftLeft(unsigned int num) {  // Logical shift
-    if (IsZero()) return; // nothing to do if ZERO
+    if (used_ == 0) return; // nothing to do if ZERO
 
     assert(used_+num <= BUFFER_SIZE); // LOSING ACCURACY not ALLOWED!!!
     memmove(dat_+num, dat_, used_);
@@ -188,7 +180,8 @@ typename BigInt<BUFFER_SIZE>::reference BigInt<BUFFER_SIZE>::operator+=(const_re
         switch (comp) {
         case MAG_EQUAL:
             sign_ = NON_NEGATIVE;
-            used_ = 0;
+            dat_[0] = 0;
+            used_ = 1;
             break;
         case MAG_LARGER:
             UniSubtract(rths);
@@ -216,24 +209,21 @@ typename BigInt<BUFFER_SIZE>::reference BigInt<BUFFER_SIZE>::operator-=(const_re
 
 template<unsigned int BUFFER_SIZE>
 typename BigInt<BUFFER_SIZE>::reference BigInt<BUFFER_SIZE>::operator*=(const_reference rths) {
-    if (ByteSize()==0 || rths.ByteSize()==0) { SetAsZero(); return *this; } // ZERO
+    if (used_==0 || rths.used_==0) { used_=0; return *this; } // ZERO
 
     sign_ = (sign_==rths.sign_) ? NON_NEGATIVE : NEGATIVE;
-    UniMultiply(rths);
+    UniMultiplyGradeSchool(rths);
 
     return *this;
 }
 
 template<unsigned int BUFFER_SIZE>
 typename BigInt<BUFFER_SIZE>::reference BigInt<BUFFER_SIZE>::operator/=(const_reference rths) {
-    Sign numsign = (sign_==rths.sign_) ? NON_NEGATIVE : NEGATIVE;
-    if (sign_ != NON_NEGATIVE) { sign_ = NON_NEGATIVE; }
-    if (rths.IsNegative()) {
-        UniDivide(-rths);
-    } else {
-        UniDivide(rths);
-    }
-    sign_ = numsign;
+    sign_ = (sign_==rths.sign_) ? NON_NEGATIVE : NEGATIVE;
+    // UniBaseDivide(rths);
+    UniRecursiveDivide(rths);
+    // UniNewtonDivide(rths);
+
     return *this;
 }
 
@@ -243,8 +233,8 @@ typename BigInt<BUFFER_SIZE>::reference BigInt<BUFFER_SIZE>::operator/=(const_re
 
 template<unsigned int BUFFER_SIZE>
 typename BigInt<BUFFER_SIZE>::MAG_COMPARED BigInt<BUFFER_SIZE>::MagCompare(const_reference rths) const {
-    if (ByteSize() < rths.ByteSize()) return MAG_LESS;
-    if (rths.ByteSize() < ByteSize()) return MAG_LARGER;
+    if (used_ < rths.used_) return MAG_LESS;
+    if (rths.used_ < used_) return MAG_LARGER;
     for (int i=used_-1; i>=0; --i) {
         if (dat_[i]<rths.dat_[i]) {
             return MAG_LESS;
@@ -264,15 +254,104 @@ void BigInt<BUFFER_SIZE>::ConstructBuffer(unsigned long long int val) {
     }
 }
 
-//////////////////////////////////////////////////////////////////////////
-// unsigned multiplication functions
-//////////////////////////////////////////////////////////////////////////
-#include "big_integer_addition_substractions.imph"
+template<unsigned int BUFFER_SIZE>
+void BigInt<BUFFER_SIZE>::UniAdd(const_reference rths) {
+    unsigned short cursum = 0;
+    DataType digit = 0;
+    DataType carry = 0;
+    int index = 0;
+    if (rths.used_ > used_) {
+        for (; index<used_; ++index) {
+            cursum = carry + rths.dat_[index] + dat_[index];
+            carry = cursum / NUMBER_BASE;
+            digit = cursum % NUMBER_BASE;
+            dat_[index] = digit;
+        }
+        for (; carry>0 && index<rths.used_; ++index) {
+            cursum = carry + rths.dat_[index];
+            carry = cursum / NUMBER_BASE;
+            digit = cursum % NUMBER_BASE;
+            dat_[index] = digit;
+        }
+        if (carry>0) {
+            dat_[index++] = carry;
+            used_ = index;
+        } else {
+            memcpy (&dat_[index], &rths.dat_[index], rths.used_-index);
+            used_ = rths.used_;
+        }
+    } else { // (curr.size() <= numstr.size())
+        for (; index<rths.used_; ++index) {
+            cursum = carry + rths.dat_[index] + dat_[index];
+            carry = cursum / NUMBER_BASE;
+            digit = cursum % NUMBER_BASE;
+            dat_[index] = digit;
+        }
+        for (; carry>0 && index<used_; ++index) {
+            cursum = carry + dat_[index];
+            carry = cursum / NUMBER_BASE;
+            digit = cursum % NUMBER_BASE;
+            dat_[index] = digit;
+        }
+        if (carry>0) {
+            dat_[index++] = carry;
+            used_ = index;
+        }
+    }
+}
 
-//////////////////////////////////////////////////////////////////////////
-// unsigned multiplication functions
-//////////////////////////////////////////////////////////////////////////
-#include "big_integer_multiplications.imph"
+template<unsigned int BUFFER_SIZE>
+void BigInt<BUFFER_SIZE>::UniSubtract(const_reference rths) {
+    assert(MagCompare(rths) != MAG_LESS);
+
+    short int curr = 0;
+    DataType digit = 0;
+    DataType borrow = 0;    
+    for (int index = 0; index<rths.used_; ++index) {
+        curr = dat_[index] - borrow;
+        if (curr < rths.dat_[index]) {
+            digit = curr + (UCHAR_MAX - rths.dat_[index] + 1);
+            borrow = 1;
+        } else {
+            digit = curr - rths.dat_[index];
+            borrow = 0;
+        }
+        dat_[index] = digit;
+    }
+    if (borrow>0) { dat_[rths.used_] -= borrow; }
+
+    for (int i=used_-1; i>=0 && dat_[i]==0; --i, --used_) {}
+}
+
+template<unsigned int BUFFER_SIZE>
+void BigInt<BUFFER_SIZE>::UniMultiplyGradeSchool(const_reference rths) {
+    // if (used_==0 || rths.used_==0) { used_=0; return; }
+    BigInt<BUFFER_SIZE> lfhs(*this);
+    memset(&dat_[0], 0, BUFFER_SIZE);
+
+    unsigned short cursum = 0;
+    DataType digit = 0;
+    DataType carry = 0;
+    for(int i=0; i<lfhs.used_; ++i) {
+        int idx = i; // result array index
+        for(int j=0; j<rths.used_; ++j, ++idx) {
+            // digit = carry+(numone[i]-'0')*(numtwo[j]-'0') + number[idx]-'0';
+            cursum = carry+(lfhs.dat_[i])*(rths.dat_[j]) + dat_[idx];
+            carry = cursum / NUMBER_BASE;
+            digit = cursum % NUMBER_BASE;
+            dat_[idx] = digit;
+        }
+
+        while (carry>0) {
+            cursum = carry + dat_[idx];
+            carry = cursum / NUMBER_BASE;
+            digit = cursum % NUMBER_BASE;
+            dat_[idx] = digit;
+            ++idx;
+        }
+        used_ = idx;
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////
 // unsigned division functions

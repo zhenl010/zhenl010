@@ -1,0 +1,68 @@
+template<unsigned int BUFFER_SIZE>
+void BigInt<BUFFER_SIZE>::UniAdd(const_reference rths) {
+    unsigned short cursum = 0;
+    DataType digit = 0;
+    DataType carry = 0;
+    int index = 0;
+    if (rths.ByteSize() > ByteSize()) {
+        for (; index<used_; ++index) {
+            cursum = carry + rths.dat_[index] + dat_[index];
+            carry = cursum / NUMBER_BASE;
+            digit = cursum % NUMBER_BASE;
+            dat_[index] = digit;
+        }
+        for (; carry>0 && index<rths.ByteSize(); ++index) {
+            cursum = carry + rths.dat_[index];
+            carry = cursum / NUMBER_BASE;
+            digit = cursum % NUMBER_BASE;
+            dat_[index] = digit;
+        }
+        if (carry>0) {
+            dat_[index++] = carry;
+            used_ = index;
+        } else {
+            memcpy (&dat_[index], &rths.dat_[index], rths.ByteSize()-index);
+            used_ = rths.ByteSize();
+        }
+    } else { // (curr.size() <= numstr.size())
+        for (; index<rths.ByteSize(); ++index) {
+            cursum = carry + rths.dat_[index] + dat_[index];
+            carry = cursum / NUMBER_BASE;
+            digit = cursum % NUMBER_BASE;
+            dat_[index] = digit;
+        }
+        for (; carry>0 && index<used_; ++index) {
+            cursum = carry + dat_[index];
+            carry = cursum / NUMBER_BASE;
+            digit = cursum % NUMBER_BASE;
+            dat_[index] = digit;
+        }
+        if (carry>0) {
+            dat_[index++] = carry;
+            used_ = index;
+        }
+    }
+}
+
+template<unsigned int BUFFER_SIZE>
+void BigInt<BUFFER_SIZE>::UniSubtract(const_reference rths) {
+    assert(MagCompare(rths) != MAG_LESS);
+
+    short int curr = 0;
+    DataType digit = 0;
+    DataType borrow = 0;    
+    for (int index = 0; index<rths.ByteSize(); ++index) {
+        curr = dat_[index] - borrow;
+        if (curr < rths.dat_[index]) {
+            digit = curr + (UCHAR_MAX - rths.dat_[index] + 1);
+            borrow = 1;
+        } else {
+            digit = curr - rths.dat_[index];
+            borrow = 0;
+        }
+        dat_[index] = digit;
+    }
+    if (borrow>0) { dat_[rths.ByteSize()] -= borrow; }
+
+    for (int i=used_-1; i>=0 && dat_[i]==0; --i, --used_) {}
+}
