@@ -3,24 +3,6 @@
 
 class Solution {
 public:
-    unsigned int UintDivide(unsigned int dividend, unsigned int divisor)
-    {
-        int shiftnum = 0;
-        while (dividend>>shiftnum > divisor) ++shiftnum;
-
-        int result = 0;
-        while(dividend >= divisor)
-        {
-            if(dividend >= (divisor<<shiftnum))
-            {
-                result |= 1<<shiftnum;
-                dividend -= divisor<<shiftnum;
-            }
-            --shiftnum;
-        }
-        return result;
-    }
-
     int divide(int dividend, int divisor) {
         // Start typing your C/C++ solution below
         // DO NOT write int main() function
@@ -53,7 +35,24 @@ public:
         }
         return ret;
     }
+private:
+    unsigned int UintDivide(unsigned int dividend, unsigned int divisor)
+    {
+        int shiftnum = 0;
+        while (dividend>>shiftnum > divisor) ++shiftnum;
 
+        int result = 0;
+        while(dividend >= divisor)
+        {
+            if(dividend >= (divisor<<shiftnum))
+            {
+                result |= 1<<shiftnum;
+                dividend -= divisor<<shiftnum;
+            }
+            --shiftnum;
+        }
+        return result;
+    }
 };
 
 int main(int argc, char** argv)

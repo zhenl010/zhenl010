@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HuffmanEncoding", "HuffmanEncoding\HuffmanEncoding.vcxproj", "{54791B5C-F4E0-465B-A704-C3CD1F24E891}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HuffmanDecoding", "HuffmanDecoding\HuffmanDecoding.vcxproj", "{DAA7E02D-FBCA-4F8B-9203-FA24F6085F73}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{54791B5C-F4E0-465B-A704-C3CD1F24E891}.Debug|Win32.ActiveCfg = Debug|Win32
+		{54791B5C-F4E0-465B-A704-C3CD1F24E891}.Debug|Win32.Build.0 = Debug|Win32
+		{54791B5C-F4E0-465B-A704-C3CD1F24E891}.Release|Win32.ActiveCfg = Release|Win32
+		{54791B5C-F4E0-465B-A704-C3CD1F24E891}.Release|Win32.Build.0 = Release|Win32
+		{DAA7E02D-FBCA-4F8B-9203-FA24F6085F73}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DAA7E02D-FBCA-4F8B-9203-FA24F6085F73}.Debug|Win32.Build.0 = Debug|Win32
+		{DAA7E02D-FBCA-4F8B-9203-FA24F6085F73}.Release|Win32.ActiveCfg = Release|Win32
+		{DAA7E02D-FBCA-4F8B-9203-FA24F6085F73}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

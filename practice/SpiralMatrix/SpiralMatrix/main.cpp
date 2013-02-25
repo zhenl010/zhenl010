@@ -1,4 +1,4 @@
-//////////////////////////////////////////////////////////////////////////
+﻿//////////////////////////////////////////////////////////////////////////
 // Given a matrix of m x n elements (m rows, n columns), return all elements of the matrix in spiral order.
 // For example,
 // Given the following matrix:
@@ -100,5 +100,17 @@ public:
 
 int main(int argc, char** argv)
 {
+    int     arr[6][5]= 
+    {
+    {  1,  2,  3,  4,  5 }, 
+    { 18, 19, 20, 21,  6 }, 
+    { 17, 28, 29, 22,  7 }, 
+    { 16, 27, 30, 23,  8 }, 
+    { 15, 26, 25, 24,  9 }, 
+    { 14, 13, 12, 11, 10 } 
+    };      
+
+    // SpiralPrintMatrix((int**)arr, 6, 5);
+
     return 0;
 }

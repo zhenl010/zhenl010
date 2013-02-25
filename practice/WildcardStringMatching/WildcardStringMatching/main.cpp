@@ -26,13 +26,14 @@ public:
     bool isMatch(const char *s, const char *p) {
         // Start typing your C/C++ solution below
         // DO NOT write int main() function
-        return IsWildMatchClean(s, p);
+        // return IsWildMatchClean(s, p);
+        return isMatchWithStar(s,p, false);
         // return IsWildMatchGoto(s, p);
     }
 private:
 
     //////////////////////////////////////////////////////////////////////////
-    // Iterative version runs much faster than recursive version
+    // Iterative version runs ~ same speed as longway2008?
     //////////////////////////////////////////////////////////////////////////
     bool IsWildMatchClean(const char *str, const char *pat) {
         const char* s = str;
@@ -69,6 +70,25 @@ private:
 
         while (*p == '*') { ++p; }
         return (*p == '\0');
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // Recursive version by longway2008 (very fast)
+    //////////////////////////////////////////////////////////////////////////
+    bool isMatchWithStar(const char *str, const char *pat, bool hasStar=false) 
+    {
+        if (!*pat) return !*str || hasStar;
+
+        const char *s, *p;
+        for (s = str, p = pat; *s; ++s, ++p) {
+            if (*p == '*') 
+                return isMatchWithStar(s, p+1, true);  
+            else if ( *p != '?' && *s != *p) 
+                return !hasStar ? false : isMatchWithStar(str+1, pat, hasStar);
+        }
+
+        while (*p == '*') ++p;
+        return (!*p);      
     }
 
     bool IsWildMatchGoto(const char *str, const char *pat) {

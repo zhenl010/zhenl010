@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MagicPixelCodingTest", "MagicPixelCodingTest\MagicPixelCodingTest.vcxproj", "{9056EABC-68F4-48D0-8696-20365B4FE725}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9056EABC-68F4-48D0-8696-20365B4FE725}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9056EABC-68F4-48D0-8696-20365B4FE725}.Debug|Win32.Build.0 = Debug|Win32
+		{9056EABC-68F4-48D0-8696-20365B4FE725}.Release|Win32.ActiveCfg = Release|Win32
+		{9056EABC-68F4-48D0-8696-20365B4FE725}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -30,6 +30,14 @@ inline unsigned int ilog2(unsigned int x)
     return l;
 }
 
+// http://www.hackersdelight.org/divcMore.pdf
+const  unsigned short DivideByThree(unsigned short lfhs) {
+    unsigned short quodient = (lfhs>>2) + (lfhs>>4);
+    quodient = quodient + (quodient >> 4);
+    quodient = quodient + (quodient >> 8);
+    return quodient + (11*(lfhs - quodient*3) >> 5);
+}
+
 template<unsigned int BUFFER_SIZE=1024>
 class BigInt {
 public:
@@ -39,7 +47,7 @@ public:
     static const unsigned short NUMBER_BASE = UCHAR_MAX + 1;
     static const unsigned short NUMBER_BASE_HALF = NUMBER_BASE / 2;
     static const unsigned short NUMBER_BASE_BITS = sizeof(DataType) << 3;
-    static const int MUL_THRESHOLD_BASE = 8;
+    static const int MUL_THRESHOLD_BASE = 3;
     static const int MUL_THRESHOLD_KARATSUBA = 64;
     static const int MUL_THRESHOLD_TOOMCOOK = 6400;
     static const unsigned long long int DIVIDE_BASE_CONST = ULONG_MAX;
@@ -111,6 +119,9 @@ private:
     void UniMultiplyGradeSchool(const_reference);
     void UniMultiplyToomCook2(const_reference); // Karatsuba
     void UniMultiplyToomCook2p5(const_reference);
+    unsigned int UniToomCook2p5Inter(BigInt<BUFFER_SIZE> mul_poly[4], const BigInt<BUFFER_SIZE>&, const BigInt<BUFFER_SIZE>&);
+    void UniToomCook2p5CoeffA(BigInt<BUFFER_SIZE> coeffs[4], const BigInt<BUFFER_SIZE>&, unsigned int);
+    void UniToomCook2p5CoeffB(BigInt<BUFFER_SIZE> coeffs[4], const BigInt<BUFFER_SIZE>&, unsigned int);
     void UniMultiplyToomCook3(const_reference);
     unsigned int UniToomCook3Inter(BigInt<BUFFER_SIZE> mul_poly[5], const BigInt<BUFFER_SIZE>&, const BigInt<BUFFER_SIZE>&);
     void UniToomCook3Coeff(BigInt<BUFFER_SIZE> coeffs[5], const BigInt<BUFFER_SIZE>&, unsigned int);
@@ -126,6 +137,10 @@ private:
     Sign sign_;
     int used_;
     DataType dat_[BUFFER_SIZE];
+
+public:
+    void UniExactDivByTwo();
+    void UniExactDivByThree();
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -258,9 +273,9 @@ typename BigInt<BUFFER_SIZE>::MAG_COMPARED BigInt<BUFFER_SIZE>::MagCompare(const
 template<unsigned int BUFFER_SIZE>
 void BigInt<BUFFER_SIZE>::ConstructBuffer(unsigned long long int val) {
     while (val>0) {
-        DataType curr = val % NUMBER_BASE;
+        DataType curr = val & UCHAR_MAX; //  % NUMBER_BASE;
         dat_[used_++] = curr;
-        val = val / NUMBER_BASE;
+        val = val >> NUMBER_BASE_BITS; // / NUMBER_BASE;
     }
 }
 

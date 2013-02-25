@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stack>
 
 typedef int DataType;
 
@@ -14,9 +15,9 @@ Node* CreateNode(const DataType& value)
 {
     Node* node = new Node;
     node->data = value;
-    node->parent = nullptr;
-    node->left = nullptr;
-    node->right = nullptr;
+    node->parent = NULL;
+    node->left = NULL;
+    node->right = NULL;
     return node;
 }
 
@@ -36,37 +37,62 @@ void InsertToRight(Node* curr, Node* newnode)
 
 Node* SuccesserNode(Node* node)
 {
-    if (node == nullptr)
-    {
-        return nullptr;
-    }
+    if (node == NULL) return NULL;
 
-    if (node->right != nullptr)
-    {
+    if (node->right != NULL) {
         Node* minnode = node->right;
-        while (minnode->left != nullptr)
-        {
+        while (minnode->left != NULL) {
             minnode = minnode->left;
         }
         return minnode;
-    } 
-    else
-    {
+    } else {
         Node* curr = node;
-        while (curr->parent!=nullptr && curr->parent->right==curr)
-        {
+        while (curr->parent!=NULL && curr->parent->right==curr) {
             curr = curr->parent;
         }
+        return (curr->parent == NULL) ? NULL : curr->parent;
+    }
+}
 
-        if (curr->parent == nullptr)
-        {
-            return nullptr;
-        } 
-        else
-        {
-            return curr->parent;
+using namespace std;
+
+class BstIterator {
+public:
+    BstIterator(Node* node);
+
+    Node* operator*();
+    BstIterator& operator++();
+    BstIterator& operator++(int);
+private:
+    stack<Node*> path_;
+};
+
+BstIterator::BstIterator(Node* node) {
+    while (node != NULL) {
+        path_.push(node);
+        node = node->left;
+    }
+}
+
+Node* BstIterator::operator*() {
+    return path_.empty() ? NULL : path_.top();
+}
+
+BstIterator& BstIterator::operator++() {
+    Node* node = path_.top();
+    if (node->right != NULL) {
+        Node* tmp = node->right;
+        while(tmp != NULL) {
+            path_.push(tmp);
+            tmp = tmp->left;
+        }
+    } else {
+        while (!path_.empty() && path_.top()->left!=node) {
+            node = path_.top();
+            path_.pop();
         }
     }
+    return *this;
 }
 
 int main(int argc, char** argv)
@@ -97,18 +123,28 @@ int main(int argc, char** argv)
 
     Node* root = nodes[0];
 
-    for (int i=0; i<BST_NODE_NUM; ++i)
-    {
-        Node* succ = SuccesserNode(nodes[i]);
+// for (int i=0; i<BST_NODE_NUM; ++i)
+// {
+//     Node* succ = SuccesserNode(nodes[i]);
+// 
+//     if (succ != NULL)
+//     {
+//         cout << nodes[i]->data << "  ----->>  " << succ->data << endl;
+//     } 
+//     else
+//     {
+//         cout << "END of the BST!" << endl;
+//     }
+// }
 
-        if (succ != nullptr)
-        {
-            cout << nodes[i]->data << "  ----->>  " << succ->data << endl;
-        } 
-        else
-        {
-            cout << "END of the BST!" << endl;
+    for (int i=0; i<BST_NODE_NUM; ++i) {
+        BstIterator itr(nodes[i]);
+
+        while (*itr != NULL) {
+            cout << (*itr)->data << "  ----->>  " << endl;
+            ++itr;
         }
+        cout << "<<=============  ----->>  " << endl;
     }
 
     return 0;

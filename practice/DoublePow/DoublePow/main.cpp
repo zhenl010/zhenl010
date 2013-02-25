@@ -13,10 +13,19 @@
 #include <iostream>
 #include <cmath>
 
+#define SPEC_CHAR_ARRY {0, 1, 2, 3, 4, 5, 6, 255}
+
+void init_f (void)
+{
+    char c[] = SPEC_CHAR_ARRY;
+
+    // do sth ...
+}
+
 // Special version for performance
 double PowDoubleInt(double x, int n)
 {
-    if(n<0) return 1.0/(x*pow(x, -(n+1)));
+    if(n<0) return 1.0/(x*PowDoubleInt(x, -(n+1)));
 
     double y = 1.0;
     while(n > 0) {
@@ -34,7 +43,7 @@ int main(int argc, char** argv)
 {
     using namespace std;
 
-    double x = -1.0;
+    double x = -2.0;
     int n = -2147483648;
 
     double y = pow(x, n);

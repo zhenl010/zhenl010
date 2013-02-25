@@ -20,12 +20,10 @@ struct ListNode {
     ListNode(int x=0) : val(x), next(NULL) {}
 };
 
-void PrintList(ListNode* h)
-{
+void PrintList(ListNode* h) {
     using namespace std;
 
-    while(h)
-    {
+    while(h) {
         cout << h->val << ',';
         h = h->next;
     }

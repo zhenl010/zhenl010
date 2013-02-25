@@ -10,11 +10,11 @@ void BigInt<BUFFER_SIZE>::UniMultiply(const_reference rths) {
         return UniMultiply(multiplier);
     }
 
-    int numds = ByteSize() - rths.ByteSize();
-    if(numds < (rths.ByteSize() >> 1)) {
-        UniMultiplyToomCook3(rths);
-    } else {
+    int numds =  - rths.ByteSize();
+    if((rths.ByteSize()*3) < (ByteSize()*2)) {
         UniMultiplyToomCook2p5(rths);
+    } else {
+        UniMultiplyToomCook3(rths);
     }
 }
 
@@ -30,15 +30,15 @@ void BigInt<BUFFER_SIZE>::UniMultiplyGradeSchool(const_reference rths) {
         int idx = i; // result array index
         for(int j=0; j<rths.ByteSize(); ++j, ++idx) {
             cursum = carry+(lfhs.dat_[i])*(rths.dat_[j]) + dat_[idx];
-            carry = cursum / NUMBER_BASE;
-            digit = cursum % NUMBER_BASE;
+            carry = cursum >> NUMBER_BASE_BITS; // / NUMBER_BASE;
+            digit = cursum & UCHAR_MAX; // % NUMBER_BASE;
             dat_[idx] = digit;
         }
 
         while (carry>0) {
             cursum = carry + dat_[idx];
-            carry = cursum / NUMBER_BASE;
-            digit = cursum % NUMBER_BASE;
+            carry = cursum >> NUMBER_BASE_BITS; // / NUMBER_BASE;
+            digit = cursum & UCHAR_MAX; // % NUMBER_BASE;
             dat_[idx] = digit;
             ++idx;
         }
@@ -49,7 +49,62 @@ void BigInt<BUFFER_SIZE>::UniMultiplyGradeSchool(const_reference rths) {
 template<unsigned int BUFFER_SIZE>
 void BigInt<BUFFER_SIZE>::UniMultiplyToomCook2p5(const_reference rths) {
     if (rths.ByteSize()<MUL_THRESHOLD_BASE) { return UniMultiplyGradeSchool(rths); }
-    UniMultiplyToomCook3(rths);
+    
+    BigInt<BUFFER_SIZE> lfhs(*this);
+    BigInt<BUFFER_SIZE> mul_poly[4];
+    unsigned int istep = UniToomCook2p5Inter(mul_poly, lfhs, rths);
+    operator=(mul_poly[3]);
+    for(int i=2; i>=0; --i) {
+        ShiftLeft(istep);
+        operator+=(mul_poly[i]);
+    }
+}
+
+template<unsigned int BUFFER_SIZE>
+unsigned int BigInt<BUFFER_SIZE>::UniToomCook2p5Inter(BigInt<BUFFER_SIZE> mul_poly[4],
+    const BigInt<BUFFER_SIZE>& lfhs, const BigInt<BUFFER_SIZE>& rths) {
+    unsigned int istep = lfhs.ByteSize()%3==0 ? lfhs.ByteSize()/3 : lfhs.ByteSize()/3+1;
+    assert((int)istep*2 >= rths.ByteSize());
+    BigInt<BUFFER_SIZE> p_coes[4], q_coes[4];
+    UniToomCook2p5CoeffA(p_coes, lfhs, istep); // divide into 3 pieces
+    UniToomCook2p5CoeffB(q_coes, rths, istep); // divide into 2 pieces
+    BigInt<BUFFER_SIZE> r_coes[4];
+    for(int i=0; i<4; ++i) r_coes[i] = p_coes[i] * q_coes[i];
+    mul_poly[0] = r_coes[0];
+    mul_poly[1] = r_coes[1] - r_coes[2];
+    mul_poly[1].UniExactDivByTwo();
+    mul_poly[1] -= r_coes[3];
+    mul_poly[2] = r_coes[1] + r_coes[2];
+    mul_poly[2].UniExactDivByTwo();
+    mul_poly[2] -= r_coes[0];
+    mul_poly[3] = r_coes[3];
+    return istep;
+}
+
+template<unsigned int BUFFER_SIZE>
+void BigInt<BUFFER_SIZE>::UniToomCook2p5CoeffA(BigInt<BUFFER_SIZE> coeffs[4],
+    const BigInt<BUFFER_SIZE>& num, unsigned int istep) {
+    BigInt<BUFFER_SIZE> m_coes[3];
+    m_coes[0] = ModBetaDigits(num, istep);
+    m_coes[1] = ModBetaDigits(num, 2*istep) >> istep;
+    m_coes[2] = num >> 2*istep;
+    BigInt<BUFFER_SIZE> pzero = m_coes[0] + m_coes[2];
+    coeffs[0] = m_coes[0];
+    coeffs[1] = pzero + m_coes[1];
+    coeffs[2] = pzero - m_coes[1];
+    coeffs[3] = m_coes[2];
+}
+
+template<unsigned int BUFFER_SIZE>
+void BigInt<BUFFER_SIZE>::UniToomCook2p5CoeffB(BigInt<BUFFER_SIZE> coeffs[4],
+    const BigInt<BUFFER_SIZE>& num, unsigned int istep) {
+    BigInt<BUFFER_SIZE> m_coes[2];
+    m_coes[0] = ModBetaDigits(num, istep);
+    m_coes[1] = num >> istep;
+    coeffs[0] = m_coes[0];
+    coeffs[1] = m_coes[0] + m_coes[1];
+    coeffs[2] = m_coes[0] - m_coes[1];
+    coeffs[3] = m_coes[1];
 }
 
 template<unsigned int BUFFER_SIZE>
@@ -67,7 +122,8 @@ void BigInt<BUFFER_SIZE>::UniMultiplyToomCook3(const_reference rths) {
 }
 
 template<unsigned int BUFFER_SIZE>
-unsigned int BigInt<BUFFER_SIZE>::UniToomCook3Inter(BigInt<BUFFER_SIZE> mul_poly[5], const BigInt<BUFFER_SIZE>& lfhs, const BigInt<BUFFER_SIZE>& rths) {
+unsigned int BigInt<BUFFER_SIZE>::UniToomCook3Inter(BigInt<BUFFER_SIZE> mul_poly[5],
+    const BigInt<BUFFER_SIZE>& lfhs, const BigInt<BUFFER_SIZE>& rths) {
     unsigned int istep = lfhs.ByteSize()%3==0 ? lfhs.ByteSize()/3 : lfhs.ByteSize()/3+1;
     BigInt<BUFFER_SIZE> p_coes[5], q_coes[5];
     UniToomCook3Coeff(p_coes, lfhs, istep);
@@ -77,17 +133,22 @@ unsigned int BigInt<BUFFER_SIZE>::UniToomCook3Inter(BigInt<BUFFER_SIZE> mul_poly
     // Bodrato sequence for Toom-3
     mul_poly[0] = r_coes[0];
     mul_poly[4] = r_coes[4];
-    mul_poly[3] = (r_coes[3]-r_coes[1]) / 3;
-    mul_poly[1] = (r_coes[1]-r_coes[2]) / 2;
+    mul_poly[3] = (r_coes[3]-r_coes[1]);
+    mul_poly[3].UniExactDivByThree();
+    mul_poly[1] = (r_coes[1]-r_coes[2]);
+    mul_poly[1].UniExactDivByTwo();
     mul_poly[2] = r_coes[2]-r_coes[0];
-    mul_poly[3] = r_coes[4] + r_coes[4] + (mul_poly[2]-mul_poly[3]) / 2;
+    mul_poly[3] = mul_poly[2]-mul_poly[3];
+    mul_poly[3].UniExactDivByTwo();
+    mul_poly[3] += (r_coes[4] + r_coes[4]);
     mul_poly[2] = mul_poly[2] + mul_poly[1] - r_coes[4];
     mul_poly[1] = mul_poly[1] - mul_poly[3];
     return istep;
 }
 
 template<unsigned int BUFFER_SIZE>
-void BigInt<BUFFER_SIZE>::UniToomCook3Coeff(BigInt<BUFFER_SIZE> coeffs[5], const BigInt<BUFFER_SIZE>& num, unsigned int istep) {
+void BigInt<BUFFER_SIZE>::UniToomCook3Coeff(BigInt<BUFFER_SIZE> coeffs[5],
+    const BigInt<BUFFER_SIZE>& num, unsigned int istep) {
     BigInt<BUFFER_SIZE> m_coes[3];
     m_coes[0] = ModBetaDigits(num, istep);
     m_coes[1] = ModBetaDigits(num, 2*istep) >> istep;
@@ -98,4 +159,34 @@ void BigInt<BUFFER_SIZE>::UniToomCook3Coeff(BigInt<BUFFER_SIZE> coeffs[5], const
     coeffs[2] = pzero - m_coes[1];
     coeffs[3] = (coeffs[2]+m_coes[2]) + (coeffs[2]+m_coes[2]) - m_coes[0];
     coeffs[4] = m_coes[2];
+}
+
+template<unsigned int BUFFER_SIZE>
+void BigInt<BUFFER_SIZE>::UniExactDivByTwo() {
+    DataType t = 0;
+    DataType s = 0;
+    for(int i=used_-1; i>=0; --i) {
+        t = dat_[i];
+        dat_[i] = (t >> 1) | s;
+        s = (t&1) << (NUMBER_BASE_BITS-1);
+    }
+    for (int i=used_-1; i>=0 && dat_[i]==0; --i, --used_) {}
+}
+
+////////////////////////////////////////////////////////////////
+// http://www.hackersdelight.org/divcMore.pdf
+// The reciprocal of 3, in binary, is approximately
+// 0.0101 0101 0101 0101 0101 0101 0101 0101 ... 
+// The simple repeating pattern allows cleaner method:
+////////////////////////////////////////////////////////////////
+template<unsigned int BUFFER_SIZE>
+void BigInt<BUFFER_SIZE>::UniExactDivByThree() {
+    unsigned short carry = 0;
+    unsigned short curr = 0;
+    for(int i=used_-1; i>=0; --i) {
+        curr = (carry<<NUMBER_BASE_BITS) + dat_[i];
+        dat_[i] = (DataType)DivideByThree(curr);
+        carry = curr - 3*dat_[i];
+    }
+    for (int i=used_-1; i>=0 && dat_[i]==0; --i, --used_) {}
 }

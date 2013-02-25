@@ -27,7 +27,7 @@ void BigInt<BUFFER_SIZE>::UniBaseDivide(const_reference rths) {
 
     int lfsize = lfhs.ByteSize();
     for (int j=numds-1; j>=0; --j) {
-        unsigned short qjstar = (NUMBER_BASE*lfhs.dat_[lfsize-numds+j] + lfhs.dat_[lfsize-numds+j-1])
+        unsigned short qjstar = ((lfhs.dat_[lfsize-numds+j] << NUMBER_BASE_BITS) + lfhs.dat_[lfsize-numds+j-1])
             / rths.dat_[rths.ByteSize()-1];
         dat_[j] = qjstar<UCHAR_MAX ? qjstar : UCHAR_MAX;
         bignfactor.ShiftRight(1);
@@ -111,7 +111,7 @@ template<unsigned int BUFFER_SIZE>
 void BigInt<BUFFER_SIZE>::UniNewtonDivide(const_reference rths) {
     // z0
     unsigned long long int esti = rths.ByteSize()>1 ? 
-        rths.dat_[rths.ByteSize()-1]*NUMBER_BASE+rths.dat_[rths.ByteSize()-2] : rths.dat_[rths.ByteSize()-1];
+        (rths.dat_[rths.ByteSize()-1] << NUMBER_BASE_BITS)+rths.dat_[rths.ByteSize()-2] : rths.dat_[rths.ByteSize()-1];
     BigInt<BUFFER_SIZE> reci = (DIVIDE_BASE_CONST / esti);
     reci.ShiftRight(DIVIDE_SHIFT_CONST-2);
     int negpow = 2;

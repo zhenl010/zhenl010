@@ -140,13 +140,11 @@ int main()
 
     CoutMatrix(mat);
 
-    CoutByLayer(mat);
+//     CoutByLayer(mat);
+//     PrintMatrixClockwisely(mat);
+//     std::cout << std::endl;
+//     SpiralPrintMatrix(mat);
 
-    PrintMatrixClockwisely(mat);
-
-    std::cout << std::endl;
-
-    SpiralPrintMatrix(mat);
 
     return 0;
 }

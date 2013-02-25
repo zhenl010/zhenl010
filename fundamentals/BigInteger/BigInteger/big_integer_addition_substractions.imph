@@ -7,14 +7,14 @@ void BigInt<BUFFER_SIZE>::UniAdd(const_reference rths) {
     if (rths.ByteSize() > ByteSize()) {
         for (; index<used_; ++index) {
             cursum = carry + rths.dat_[index] + dat_[index];
-            carry = cursum / NUMBER_BASE;
-            digit = cursum % NUMBER_BASE;
+            carry = cursum >> NUMBER_BASE_BITS; // / NUMBER_BASE;
+            digit = cursum & UCHAR_MAX; // % NUMBER_BASE;
             dat_[index] = digit;
         }
         for (; carry>0 && index<rths.ByteSize(); ++index) {
             cursum = carry + rths.dat_[index];
-            carry = cursum / NUMBER_BASE;
-            digit = cursum % NUMBER_BASE;
+            carry = cursum >> NUMBER_BASE_BITS; // / NUMBER_BASE;
+            digit = cursum & UCHAR_MAX; // % NUMBER_BASE;
             dat_[index] = digit;
         }
         if (carry>0) {
@@ -27,14 +27,14 @@ void BigInt<BUFFER_SIZE>::UniAdd(const_reference rths) {
     } else { // (curr.size() <= numstr.size())
         for (; index<rths.ByteSize(); ++index) {
             cursum = carry + rths.dat_[index] + dat_[index];
-            carry = cursum / NUMBER_BASE;
-            digit = cursum % NUMBER_BASE;
+            carry = cursum >> NUMBER_BASE_BITS; // / NUMBER_BASE;
+            digit = cursum & UCHAR_MAX; // % NUMBER_BASE;
             dat_[index] = digit;
         }
         for (; carry>0 && index<used_; ++index) {
             cursum = carry + dat_[index];
-            carry = cursum / NUMBER_BASE;
-            digit = cursum % NUMBER_BASE;
+            carry = cursum >> NUMBER_BASE_BITS; // / NUMBER_BASE;
+            digit = cursum & UCHAR_MAX; // % NUMBER_BASE;
             dat_[index] = digit;
         }
         if (carry>0) {
