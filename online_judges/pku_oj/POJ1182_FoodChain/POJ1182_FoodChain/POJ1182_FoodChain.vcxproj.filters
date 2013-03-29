@@ -18,19 +18,8 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="edge_removal_solution.cpp">
+    <ClCompile Include="webasw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="dfs_solution.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="edge_removal_solution.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="dfs_solution.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PalindromePartition", "PalindromePartition\PalindromePartition.vcxproj", "{9AC1B847-971A-43D5-9C79-B50600D2FAD3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9AC1B847-971A-43D5-9C79-B50600D2FAD3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9AC1B847-971A-43D5-9C79-B50600D2FAD3}.Debug|Win32.Build.0 = Debug|Win32
+		{9AC1B847-971A-43D5-9C79-B50600D2FAD3}.Release|Win32.ActiveCfg = Release|Win32
+		{9AC1B847-971A-43D5-9C79-B50600D2FAD3}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

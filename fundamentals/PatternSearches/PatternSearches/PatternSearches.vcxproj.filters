@@ -18,18 +18,12 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="edge_removal_solution.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="dfs_solution.cpp">
+    <ClCompile Include="kmp_search.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="edge_removal_solution.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="dfs_solution.h">
+    <ClInclude Include="kmp_search.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{6D1D70A2-12DB-48A1-B991-EE1DCF42017E}</ProjectGuid>
-    <RootNamespace>TopologicalSortingsoj9808</RootNamespace>
+    <ProjectGuid>{EEDE779F-FFC4-4671-8C75-DE4BDA7DE60A}</ProjectGuid>
+    <RootNamespace>Sqrt</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -62,13 +62,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="dfs_solution.cpp" />
-    <ClCompile Include="edge_removal_solution.cpp" />
     <ClCompile Include="main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="dfs_solution.h" />
-    <ClInclude Include="edge_removal_solution.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
