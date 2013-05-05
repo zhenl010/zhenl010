@@ -48,14 +48,10 @@ public:
         // Start typing your C/C++ solution below
         // DO NOT write int main() function
         string str(n, '\0');
-        for(int i=0; i<n; ++i) {
-            str[i] = '1' + i;
-        }
+        for(int i=0; i<n; ++i) { str[i] = '1' + i; }
         
         int fac = 1;
-        for(int i=2; i<n; ++i) {
-            fac *= i;
-        }
+        for(int i=2; i<n; ++i) { fac *= i; }
 
         --k;
         for(int i=0; i<n-1; ++i) {

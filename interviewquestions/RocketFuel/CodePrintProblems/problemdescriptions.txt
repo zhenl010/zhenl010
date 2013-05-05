@@ -1,0 +1,161 @@
+
+Find Battle
+===========
+
+Many Massively Multiplayer Mobile Games, such as those made by Uken Games, feature a PvP component, which involve battling your character against other user's characters. Obviously, it's much more fun to battle against characters made by your Facebook friends, but sometimes that's not possible. In those cases, we match against other criteria. One of those criteria is proximity, to battle against users that are closest to you.
+
+Assume a new user has just launched a game on their phone and wants to battle. Given the co-ordinates of existing users, figure out which existing users to send a battle invite. In a more real world setting, the challenge is being able to do this type of matching with multiple criteria, such as experience level, and with thousands of simultaneous users.
+
+Input Format
+First line of input contains N and Q.
+Then follow N lines. Each containing three space-separated integers, "id x y" where id is the id of the existing user and (x, y) is the co-ordinate at which he is located.
+Then follow Q lines, each containing two space-separated integers, "x y" where (x, y) is the location of a new user
+
+Output Format
+Output Q lines, ith line contains the id of the existing user nearest to the ith new user, followed by the space-separated id of the second nearest existing user (we want to give the new user a backup battle, if the first existing user declines his invite). In case of there being more that one existing user with the same minimum distance, print the one with higher id. For the purposes of this problem, existing users can receive multiple battle invites (from different new users).
+
+Distance between two nodes, one at (x1, y1) and other at (x2, y2) is defined as the Euclidean distance: the square root of (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2).
+
+Sample Input
+
+4 2
+1 0 0
+2 0 2
+3 2 2
+4 2 0
+0 3
+1 1
+
+Sample Output
+2 3
+4 3
+
+Explanation
+
+In the network there are four existing users, the user with id 1 is located at (0, 0), with id 2 at(0, 2), with id 3 at (2, 2) and with id 4 at (2, 0). There are two new users, one at (2, 3) and another at (1, 1).
+For the first new user, the existing user with id 2 is nearest, followed by user id 3. For the second new user, all four existing users are at the same distance, so the answer includes the ones with the highest id in descending order, i.e 4 3.
+
+Constraint
+
+1 <= N, Q <= 100,000
+0 <= x,y <= 1000,000
+x and y are integers
+
+
+Money Gambling
+==============
+
+Alice and Bob play a game. The operations at round i (i >= 1) is as follows:
+
+Alice pays Bob 2 * i - 1 dollars,
+Alice tosses a biased coin,
+If the result of the coin was heads for k consecutive rounds, the game stops, otherwise the game continues.
+Given k and the probablity that the outcome of a toss is heads (p), your program should find the expected number of dollars Alice pays Bob, and also the expected number of rounds played.
+
+Input
+
+First line of input contains number of test-cases (T <= 50). Each of the next T lines contain p and k separated by a single space. p is a decimal number with at most two digits after the decimal point such that 0.6 <= p <= 1. k is a positive integer such that 0 < k <= 20.
+
+Output
+
+For each test-case, print two integer numbers. First number is the integer part of the expected number of rounds of game, and the second number is the integer part of the expected number of dollars Alice pays Bob.
+
+Sample Input
+
+3
+0.6 1
+1 20
+0.80 8
+
+Sample Output
+
+1 3
+20 400
+24 976
+
+Note: The final answer will fit in 64 bit integer.
+
+
+Jonny's Toys
+============
+
+Jonny'y father has purchased him a new toy. The beauty of the toy is that it comes in N components and Jonny can join them in ways he like to make powerful superheroes.
+
+Joining two toy components require certain effort which equal the sum of the weights of the two components. Little jonny desperate to make his new superhero as fast as possible.
+
+Given the initial weights of the toy components help Jonny build his superhero with least possible effort.
+
+Note: After joining any two toy components of weight say x and y, weight of the new combined component is x+y. Since all the initial pieces belong to the same superhero to be made, you must use all the components given.
+
+Input Format
+
+First line of the input contains N, the number of components present initially.
+
+Output Format
+
+Print a single integer, which equals total minimum effort required by Jonny to make his superhero.
+
+Sample Input
+4
+10
+9
+7
+8
+
+Sample Output
+68
+ 
+
+Explanation
+
+Combine components of weight 10 and 9 which produces a new component of weight 19.
+Combine 8 and 7 to get 15
+Combine 15 and 19 to get 34
+So total minimum effort required is  19+15+34 = 68.
+
+Constraint
+
+1 <= N <= 1000,000
+
+1 <= Weight of any initial component <= 1000,000
+
+
+Insect Trio
+===========
+
+Dr. Gellar has discovered a curious group of insects. The group has three species 'a', 'b' and 'c'. Under certain conditions, Dr. Geller finds that they perform the following operation: When two insects, one of species 'a' and other of species 'b' mate, they get destroyed and a new insect of species 'c' is produced. Similarly 'b' and 'c' get destroyed to produce 'a', and 'a' and 'c' get destroyed to produce 'b'. He makes a game out of it by arranging the insects in a row in a glass tube, such that they are only able to mate with their adjacent neighbors.
+
+Given the initial configuration of insects, find the minimum number of insects that can remain.
+
+Input Format
+
+First line of input contains T, the number of testcases.
+
+Then follow T lines, each containing a string which describes the initial position of insects in the line.
+
+Output Format
+
+For each testcase print the minimum number of insects that can remain in the end.
+
+Sample Input
+
+2
+bba
+bcbc
+
+Sample Output
+
+1
+2
+
+Explanation
+
+In the first configuration "bba", the following sequence of matings drops the number of insects to 1. "bba" -> "bc" -> "a".
+
+For the second configuration "bcbc", "bcbc" -> "abc" -> "cc", gets the number of insects as two at the end.
+
+Constraint
+
+1 <= T <= 200
+
+1 <= N <= 100,000

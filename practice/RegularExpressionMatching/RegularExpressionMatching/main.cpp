@@ -28,17 +28,14 @@ public:
         // Start typing your C/C++ solution below
         // DO NOT write int main() function
         if (*p == '\0') return (*s == '\0');
-        if (*s == '\0') return (*p == '\0' || (*(p+1)=='*' && isMatch(s, p+2)));
 
-        char prev = *p;
         if (*(p+1) != '*') {
-            return (*p==*s || *p=='.') && isMatch(++s, ++p);
+            return (*p==*s || (*s!='\0' && *p=='.')) && isMatch(++s, ++p);
         } else {
-            p = p+2; // move past '*'
-            while (*s!='\0' && (*s==prev || prev=='.')) {
-                if (isMatch(s++, p)) return true;
+            while (*s!='\0' && (*s==*p || *p=='.')) {
+                if (isMatch(s++, p+2)) return true;
             }
-            return isMatch(s, p);
+            return isMatch(s, p+2);
         }
     }
 };
@@ -50,7 +47,7 @@ int main(int argc, char** argv)
 {
     Solution solver;
 
-    char* str = "a";
+    char* str = "abcc";
     char* pat = ".*c";
 
     bool ismatch = solver.isMatch(str, pat);

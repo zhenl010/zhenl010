@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RomanNumbers", "RomanNumbers\RomanNumbers.vcxproj", "{AFFE5779-F7ED-4365-87D1-DBC0F273F8D3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AFFE5779-F7ED-4365-87D1-DBC0F273F8D3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AFFE5779-F7ED-4365-87D1-DBC0F273F8D3}.Debug|Win32.Build.0 = Debug|Win32
+		{AFFE5779-F7ED-4365-87D1-DBC0F273F8D3}.Release|Win32.ActiveCfg = Release|Win32
+		{AFFE5779-F7ED-4365-87D1-DBC0F273F8D3}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

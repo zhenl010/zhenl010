@@ -1,0 +1,359 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 8.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[     11034,        350]
+NotebookOptionsPosition[     10370,        324]
+NotebookOutlinePosition[     10712,        339]
+CellTagsIndexPosition[     10669,        336]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"Clear", "[", "Pay", "]"}], ";", " ", 
+  RowBox[{"Clear", "[", "AvgRound", "]"}], ";", " ", 
+  RowBox[{"Clear", "[", "AvgMoney", "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"Pay", "[", "i_", "]"}], " ", ":=", " ", 
+   RowBox[{
+    RowBox[{"2", "*", "i"}], "-", "1"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"SumPay", "[", "i_", "]"}], ":=", 
+   RowBox[{
+    UnderoverscriptBox["\[Sum]", 
+     RowBox[{"j", "=", "1"}], "i"], 
+    RowBox[{"Pay", "[", "i", "]"}]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"EstU", "[", 
+   RowBox[{"p_", ",", "k_", ",", "s_"}], "]"}], ":=", 
+  FractionBox[
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"1", "-", 
+      RowBox[{"p", "*", "s"}]}], ")"}], 
+    SuperscriptBox[
+     RowBox[{"(", 
+      RowBox[{"p", "*", "s"}], ")"}], "k"]}], 
+   RowBox[{"1", "-", "s", "+", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"1", "-", "p"}], ")"}], "*", "s", "*", 
+     SuperscriptBox[
+      RowBox[{"(", 
+       RowBox[{"p", "*", "s"}], ")"}], "k"]}]}]]}]}], "Input",
+ CellChangeTimes->CompressedData["
+1:eJxTTMoPSmViYGCQBGIQvSinfI3asleO+s5z14Po/QZdu0B01t0/e0E0i7/I
+CRC9TKX9NIh2c2X+CqIdxL79B9Ev2EvE1YH0zgmlKiBaPd/NDESzRGwNAdF1
+E2UjQfQzn2mJINro1c1UsPwjyywQfWhSQzmIllP/UA+ic2aYbAPRXjOFd4Bo
+yS0mvRpA+mDyAjDd82+9tSaQ7mJ97w6io1wO+4LoDCG5KBBt808pG0Rf4j6c
+B6KFODJLQbTKLfcaEO25RKEJRO/R1wXTszIuzQHRfZnz54LoIoOmhWBzhdaC
+6Syb/OUg+lV5GZj+VWG7H0R/fhwLpp3Kt54E0Ykex8+DzXfZdAVEVwiIXAXR
+lS4mL7WA9OVzjWB67QNvU20g/cAg3RFE23u9mwiiMx5XzAfRAGmbxOY=
+  "],
+ FontSize->18],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"AvgRound", "[", 
+   RowBox[{"p_", ",", " ", "k_"}], "]"}], " ", ":=", 
+  RowBox[{
+   RowBox[{"D", "[", 
+    RowBox[{
+     RowBox[{"EstU", "[", 
+      RowBox[{"p", ",", "k", ",", "s"}], "]"}], ",", "s"}], "]"}], "/.", 
+   RowBox[{"s", "\[Rule]", "1"}]}]}], "\[IndentingNewLine]", 
+ RowBox[{"AvgRound", "[", 
+  RowBox[{"p", ",", "k"}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"AvgRound", "[", 
+  RowBox[{"0.60", ",", "1"}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"AvgRound", "[", 
+  RowBox[{"0.80", ",", "8"}], "]"}]}], "Input",
+ CellChangeTimes->{{3.5767782547372084`*^9, 3.5767782867350388`*^9}, {
+  3.5767813398426666`*^9, 3.5767813610198774`*^9}, {3.5767813947638073`*^9, 
+  3.5767813998140965`*^9}, {3.5767821111027803`*^9, 3.5767821401464415`*^9}, {
+  3.5767821998358555`*^9, 3.576782200029866*^9}, {3.576782264543556*^9, 
+  3.576782275258169*^9}, {3.5767823111782236`*^9, 3.576782311410237*^9}},
+ FontSize->18],
+
+Cell[BoxData[
+ RowBox[{"k", "-", 
+  FractionBox["p", 
+   RowBox[{"1", "-", "p"}]], "-", 
+  FractionBox[
+   RowBox[{
+    SuperscriptBox["p", 
+     RowBox[{"-", "k"}]], " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"-", "1"}], "+", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"1", "-", "p"}], ")"}], " ", 
+       SuperscriptBox["p", "k"]}], "+", 
+      RowBox[{"k", " ", 
+       RowBox[{"(", 
+        RowBox[{"1", "-", "p"}], ")"}], " ", 
+       SuperscriptBox["p", "k"]}]}], ")"}]}], 
+   RowBox[{"1", "-", "p"}]]}]], "Output",
+ CellChangeTimes->{
+  3.576781362898985*^9, 3.5767813959528756`*^9, 3.5767821411534986`*^9, 
+   3.5767822049831495`*^9, {3.576782269317829*^9, 3.5767822763152294`*^9}, 
+   3.5767823130413303`*^9}],
+
+Cell[BoxData["1.6666666666666665`"], "Output",
+ CellChangeTimes->{
+  3.576781362898985*^9, 3.5767813959528756`*^9, 3.5767821411534986`*^9, 
+   3.5767822049831495`*^9, {3.576782269317829*^9, 3.5767822763152294`*^9}, 
+   3.5767823130423303`*^9}],
+
+Cell[BoxData["24.802322387695288`"], "Output",
+ CellChangeTimes->{
+  3.576781362898985*^9, 3.5767813959528756`*^9, 3.5767821411534986`*^9, 
+   3.5767822049831495`*^9, {3.576782269317829*^9, 3.5767822763152294`*^9}, 
+   3.57678231304333*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"AvgMoney", "[", 
+   RowBox[{"p_", ",", " ", "k_"}], "]"}], ":=", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"AvgRound", "[", 
+     RowBox[{"p", ",", "k"}], "]"}], "+", 
+    RowBox[{"D", "[", 
+     RowBox[{
+      RowBox[{"D", "[", 
+       RowBox[{
+        RowBox[{"EstU", "[", 
+         RowBox[{"p", ",", "k", ",", "s"}], "]"}], ",", "s"}], "]"}], ",", 
+      "s"}], "]"}]}], "/.", 
+   RowBox[{"s", "\[Rule]", "1"}]}]}], "\[IndentingNewLine]", 
+ RowBox[{"AvgMoney", "[", 
+  RowBox[{"p", ",", "k"}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"AvgMoney", "[", 
+  RowBox[{"0.60", ",", "1"}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"AvgMoney", "[", 
+  RowBox[{"0.80", ",", "8"}], "]"}], "\[IndentingNewLine]"}], "Input",
+ CellChangeTimes->{{3.576778269421048*^9, 3.576778293421421*^9}, {
+  3.5767812953591223`*^9, 3.5767813001693974`*^9}, {3.576782395355038*^9, 
+  3.5767824522902946`*^9}, {3.5767824852721815`*^9, 3.5767825456306334`*^9}},
+ FontSize->18],
+
+Cell[BoxData[
+ RowBox[{"k", "+", 
+  RowBox[{
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"-", "1"}], "+", "k"}], ")"}], " ", "k"}], "-", 
+  FractionBox["p", 
+   RowBox[{"1", "-", "p"}]], "-", 
+  FractionBox[
+   RowBox[{"2", " ", "k", " ", "p"}], 
+   RowBox[{"1", "-", "p"}]], "+", 
+  FractionBox[
+   RowBox[{"2", " ", 
+    SuperscriptBox["p", 
+     RowBox[{"1", "-", "k"}]], " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"-", "1"}], "+", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"1", "-", "p"}], ")"}], " ", 
+       SuperscriptBox["p", "k"]}], "+", 
+      RowBox[{"k", " ", 
+       RowBox[{"(", 
+        RowBox[{"1", "-", "p"}], ")"}], " ", 
+       SuperscriptBox["p", "k"]}]}], ")"}]}], 
+   SuperscriptBox[
+    RowBox[{"(", 
+     RowBox[{"1", "-", "p"}], ")"}], "2"]], "-", 
+  FractionBox[
+   RowBox[{
+    SuperscriptBox["p", 
+     RowBox[{"-", "k"}]], " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"-", "1"}], "+", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"1", "-", "p"}], ")"}], " ", 
+       SuperscriptBox["p", "k"]}], "+", 
+      RowBox[{"k", " ", 
+       RowBox[{"(", 
+        RowBox[{"1", "-", "p"}], ")"}], " ", 
+       SuperscriptBox["p", "k"]}]}], ")"}]}], 
+   RowBox[{"1", "-", "p"}]], "-", 
+  FractionBox[
+   RowBox[{"2", " ", "k", " ", 
+    SuperscriptBox["p", 
+     RowBox[{"-", "k"}]], " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"-", "1"}], "+", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"1", "-", "p"}], ")"}], " ", 
+       SuperscriptBox["p", "k"]}], "+", 
+      RowBox[{"k", " ", 
+       RowBox[{"(", 
+        RowBox[{"1", "-", "p"}], ")"}], " ", 
+       SuperscriptBox["p", "k"]}]}], ")"}]}], 
+   RowBox[{"1", "-", "p"}]], "+", 
+  FractionBox[
+   RowBox[{"2", " ", 
+    SuperscriptBox["p", 
+     RowBox[{
+      RowBox[{"-", "2"}], " ", "k"}]], " ", 
+    SuperscriptBox[
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"-", "1"}], "+", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"1", "-", "p"}], ")"}], " ", 
+        SuperscriptBox["p", "k"]}], "+", 
+       RowBox[{"k", " ", 
+        RowBox[{"(", 
+         RowBox[{"1", "-", "p"}], ")"}], " ", 
+        SuperscriptBox["p", "k"]}]}], ")"}], "2"]}], 
+   SuperscriptBox[
+    RowBox[{"(", 
+     RowBox[{"1", "-", "p"}], ")"}], "2"]], "-", 
+  FractionBox[
+   RowBox[{
+    SuperscriptBox["p", 
+     RowBox[{"-", "k"}]], " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"2", " ", "k", " ", 
+       RowBox[{"(", 
+        RowBox[{"1", "-", "p"}], ")"}], " ", 
+       SuperscriptBox["p", "k"]}], "+", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"-", "1"}], "+", "k"}], ")"}], " ", "k", " ", 
+       RowBox[{"(", 
+        RowBox[{"1", "-", "p"}], ")"}], " ", 
+       SuperscriptBox["p", "k"]}]}], ")"}]}], 
+   RowBox[{"1", "-", "p"}]]}]], "Output",
+ CellChangeTimes->{
+  3.576782454556424*^9, {3.576782485912218*^9, 3.576782517278012*^9}, 
+   3.5767825474727387`*^9}],
+
+Cell[BoxData["3.8888888888888893`"], "Output",
+ CellChangeTimes->{
+  3.576782454556424*^9, {3.576782485912218*^9, 3.576782517278012*^9}, 
+   3.576782547474739*^9}],
+
+Cell[BoxData["976.694134932475`"], "Output",
+ CellChangeTimes->{
+  3.576782454556424*^9, {3.576782485912218*^9, 3.576782517278012*^9}, 
+   3.576782547476739*^9}]
+}, Open  ]],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"AvgMoney", "[", 
+   RowBox[{"p_", ",", " ", "k_"}], "]"}], ":=", 
+  RowBox[{
+   RowBox[{"(", 
+    RowBox[{
+     UnderoverscriptBox["\[Sum]", 
+      RowBox[{"i", "=", "1"}], 
+      RowBox[{"k", "-", "1"}]], 
+     RowBox[{"SumPay", "[", "i", "]"}]}], ")"}], "+", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"SumPay", "[", "k", "]"}], "*", 
+     SuperscriptBox["p", "k"]}], ")"}], " ", "+", " ", 
+   RowBox[{"(", 
+    RowBox[{
+     UnderoverscriptBox["\[Sum]", 
+      RowBox[{"i", "=", 
+       RowBox[{"k", "+", "1"}]}], 
+      RowBox[{"k", "+", "k"}]], 
+     RowBox[{
+      RowBox[{"SumPay", "[", "i", "]"}], "*", 
+      SuperscriptBox["p", "k"], "*", 
+      RowBox[{"(", 
+       RowBox[{"1", "-", "p"}], ")"}]}]}], ")"}], "+", 
+   RowBox[{"(", 
+    RowBox[{
+     UnderoverscriptBox["\[Sum]", 
+      RowBox[{"i", "=", 
+       RowBox[{"k", "+", "1", "+", "k"}]}], "\[Infinity]"], 
+     RowBox[{
+      RowBox[{"SumPay", "[", "i", "]"}], "*", 
+      SuperscriptBox["p", "k"], "*", 
+      RowBox[{"(", 
+       RowBox[{"1", "-", "p"}], ")"}], "*", 
+      RowBox[{"ProbNoK", "[", 
+       RowBox[{"p", ",", "k", ",", "i"}], "]"}]}]}], 
+    ")"}]}]}], "\[IndentingNewLine]", 
+ RowBox[{"AvgMoney", "[", 
+  RowBox[{"p", ",", "k"}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"AvgMoney", "[", 
+  RowBox[{"0.60", ",", "1"}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"AvgMoney", "[", 
+  RowBox[{"1.00", ",", "20"}], "]"}], "\[IndentingNewLine]", 
+ RowBox[{"AvgMoney", "[", 
+  RowBox[{"0.80", ",", "8"}], "]"}], "\[IndentingNewLine]"}], "Input",
+ CellChangeTimes->{{3.576778269421048*^9, 3.576778293421421*^9}, {
+  3.5767812953591223`*^9, 3.5767813001693974`*^9}, {3.576782395355038*^9, 
+  3.5767823984512153`*^9}},
+ FontSize->18]
+},
+WindowSize->{1807, 857},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
+FrontEndVersion->"8.0 for Microsoft Windows (64-bit) (October 6, 2011)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[557, 20, 1570, 44, 193, "Input"],
+Cell[CellGroupData[{
+Cell[2152, 68, 952, 21, 118, "Input"],
+Cell[3107, 91, 737, 23, 53, "Output"],
+Cell[3847, 116, 243, 4, 30, "Output"],
+Cell[4093, 122, 240, 4, 30, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[4370, 131, 978, 25, 145, "Input"],
+Cell[5351, 158, 2924, 101, 54, "Output"],
+Cell[8278, 261, 163, 3, 30, "Output"],
+Cell[8444, 266, 161, 3, 30, "Output"]
+}, Open  ]],
+Cell[8620, 272, 1746, 50, 209, "Input"]
+}
+]
+*)
+
+(* End of internal cache information *)

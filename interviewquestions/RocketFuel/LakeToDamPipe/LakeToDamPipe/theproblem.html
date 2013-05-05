@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Head First Lounge</title>
+		<style type="text/css">
+			body {
+				background-color: #d2b48c;
+				margin-left: 20%;
+				margin-right: 20%;
+				border: 2px dotted black;
+				padding: 10px 10px 10px 10px;
+				font-family: sans-serif;
+			}
+		</style>
+	</head>
+	<body>
+    <!-- comment like this! -->
+		<h1>The problem description</h1>
+		<p>
+            Suppose there is a lake (some height lh) and then there are hills/mountains (with height from 0 to 9). 
+            And finally there is Dam. All the hills and the lake and the dam are on a n*m matrix. 
+
+            given the height of all points on matrix (lake and dam are also on one such point). find the minimum cost required to create a path from lake to dam so that dam can be filled with water. 
+            Now height of each point can be increased or decreased except the lake.
+            water can flow only along the adjacent points not along the diagonals. Water can flow from point A to adjacent point B iff heightA >=heightB 
+            <br />-----------------------------------------------------------------------------------------<br />
+            If we could only decrease the heights, this was a very easy question. but in current case heights can be decreased as well. <br />
+            <br />
+            More specifically, the input that will be fed into your program will be formatted as follows: <br />
+            N M <br />
+            lakeLocationX lakeLocationY <br />
+            damLocationX damLocationY <br />
+            elevationX1Y1elevationX1Y2...elevationX1YM <br />
+            elevationX2Y1elevationX2Y2...elevationX2YM <br />
+            . <br />
+            . <br />
+            . <br />
+            elevationXNY1elevationXNY2...elevationXNYM <br />
+            <br />
+            where lakeLocationX and damLocationX are integers in the interval [1, N], and lakeLocationY and damLocationY are integers in the interval [1, M], and all elements are integers in the interval [0, 9]. N 
+            Given such an input, your program should print out the minimum cost to build an irrigation path from the lake to the dam. The constraints are as follows. The lake and dam will not be at the same location. The elevation of all points except for the lake can be increased or decreased at a cost of one for every unit of change (you may leave the elevation the same for a cost of 0). N and M will each be at most 300. After paying for any excavation that is necessary, you can build a path at 0 additional cost if there is a sequence of points starting at the lake and ending at the dam such that the following are true: <br />
+            1. (Contiguous path) Each point in the sequence is adjacent to the previous point (no diagonal adjacency -- points in the interior of the map have exactly 4 adjacent points) <br />
+            2. (Downhill path) Each point in the sequence, including the lake and dam, has an elevation that is at most that of the previous point in the sequence. <br />
+		</p>
+		<h2>Sample inputs</h2>
+		<p>
+            3 5<br />
+            1 1<br />
+            3 4<br />
+            27310<br />
+            21171<br />
+            77721<br />
+		</p>
+		<h2>Sample inputs</h2>
+		<p>
+            1 1<br />
+            2 1<br />
+            2 2<br />
+            2 3<br />
+            2 4<br />
+            3 4<br />
+		</p>
+	</body>
+</html>

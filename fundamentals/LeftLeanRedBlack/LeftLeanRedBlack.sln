@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LeftLeanRedBlack", "LeftLeanRedBlack\LeftLeanRedBlack.vcxproj", "{C17DAAE6-C330-4F54-AB11-89546010DB3F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C17DAAE6-C330-4F54-AB11-89546010DB3F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C17DAAE6-C330-4F54-AB11-89546010DB3F}.Debug|Win32.Build.0 = Debug|Win32
+		{C17DAAE6-C330-4F54-AB11-89546010DB3F}.Release|Win32.ActiveCfg = Release|Win32
+		{C17DAAE6-C330-4F54-AB11-89546010DB3F}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

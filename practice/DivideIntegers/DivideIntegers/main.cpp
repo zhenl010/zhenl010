@@ -1,4 +1,5 @@
-#include <iostream>
+// #include <iostream>
+#include <cstdlib>
 #include <cassert>
 
 class Solution {
@@ -8,12 +9,9 @@ public:
         // DO NOT write int main() function
         assert(divisor!=0);
 
-        if ((dividend<0 && divisor>0) || (dividend>0 && divisor<0))
-        {
+        if ((dividend<0 && divisor>0) || (dividend>0 && divisor<0)) {
             return -(int)UintDivide(abs(dividend), abs(divisor));
-        } 
-        else
-        {
+        } else {
             return (int)UintDivide(abs(dividend), abs(divisor));
         }
     }
@@ -42,10 +40,8 @@ private:
         while (dividend>>shiftnum > divisor) ++shiftnum;
 
         int result = 0;
-        while(dividend >= divisor)
-        {
-            if(dividend >= (divisor<<shiftnum))
-            {
+        while(dividend >= divisor) {
+            if(dividend >= (divisor<<shiftnum))  {
                 result |= 1<<shiftnum;
                 dividend -= divisor<<shiftnum;
             }
