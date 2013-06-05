@@ -44,31 +44,9 @@ private:
     return nullptr;
   }
 
-  // pre-condition: p->r_->color == RedBlack::RED
-  static Node* RotateLeft(Node* p) {
-    Node* tmp = p->r_;
-    p->r_ = tmp->l_;
-    tmp->l_ = p;
-    tmp->color = p->color;
-    tmp->n = p->n;
-    p->color = RedBlack::RED; // via precondition
-    p->n = Size(p->l_) + 1 + Size(p->r_);
-    return tmp;
-  }
-
-  // pre-condition: q->l_->color == RedBlack::RED
-  static Node* RotateRight(Node* q) {
-    Node* tmp = q->l_;
-    q->l_ = tmp->r_;
-    tmp->r_ = q;
-    tmp->color = q->color;
-    tmp->n = q->n;
-    q->color = RedBlack::RED;  // via precondition
-    q->n = Size(q->l_) + 1 + Size(q->r_);
-    return tmp;
-  }
-
   // helper functions
+  static Node* RotateLeft(Node* p);
+  static Node* RotateRight(Node* q);
   static RedBlack Flip(RedBlack c);
   static bool IsRed(const Node* p);
   static int Size(const Node* p);

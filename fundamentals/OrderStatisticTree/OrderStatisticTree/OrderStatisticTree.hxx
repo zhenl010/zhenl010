@@ -29,6 +29,32 @@ T OrderStatisticTree<T, CompareFunction>::Select(int k) {
 }
 
 template<typename T, bool (*CompareFunction)(const T&, const T&)>
+typename OrderStatisticTree<T, CompareFunction>::Node*
+OrderStatisticTree<T, CompareFunction>::RotateLeft(Node* p) {
+  Node* tmp = p->r_;
+  p->r_ = tmp->l_;
+  tmp->l_ = p;
+  tmp->color = p->color;
+  tmp->n = p->n;
+  p->color = RedBlack::RED; // via precondition
+  p->n = Size(p->l_) + 1 + Size(p->r_);
+  return tmp;
+}
+
+template<typename T, bool (*CompareFunction)(const T&, const T&)>
+typename OrderStatisticTree<T, CompareFunction>::Node*
+OrderStatisticTree<T, CompareFunction>::RotateRight(Node* q) {
+  Node* tmp = q->l_;
+  q->l_ = tmp->r_;
+  tmp->r_ = q;
+  tmp->color = q->color;
+  tmp->n = q->n;
+  q->color = RedBlack::RED;  // via precondition
+  q->n = Size(q->l_) + 1 + Size(q->r_);
+  return tmp;
+}
+
+template<typename T, bool (*CompareFunction)(const T&, const T&)>
 typename OrderStatisticTree<T, CompareFunction>::RedBlack
   OrderStatisticTree<T, CompareFunction>::Flip(RedBlack c) {
     return c==RedBlack::BLACK ? RedBlack::RED : RedBlack::BLACK;
@@ -59,91 +85,91 @@ void OrderStatisticTree<T, CompareFunction>::ColorFlip(Node* rt) {
 
 template<typename T, bool (*CompareFunction)(const T&, const T&)>
 typename OrderStatisticTree<T, CompareFunction>::Node*
-  OrderStatisticTree<T, CompareFunction>::FixUp(Node* rt) {
-    if (IsRed(rt->r_)) { rt = RotateLeft(rt); } // fix right-leaning
-    if (IsRed(rt->l_) && IsRed(rt->l_->l_)) { rt = RotateRight(rt); } // fix red-red
-    if (IsRed(rt->l_) && IsRed(rt->r_)) { ColorFlip(rt); } // split 4-nodes
-    return rt;
+OrderStatisticTree<T, CompareFunction>::FixUp(Node* rt) {
+  if (IsRed(rt->r_)) { rt = RotateLeft(rt); } // fix right-leaning
+  if (IsRed(rt->l_) && IsRed(rt->l_->l_)) { rt = RotateRight(rt); } // fix red-red
+  if (IsRed(rt->l_) && IsRed(rt->r_)) { ColorFlip(rt); } // split 4-nodes
+  return rt;
 }
 
 template<typename T, bool (*CompareFunction)(const T&, const T&)>
 typename OrderStatisticTree<T, CompareFunction>::Node*
-  OrderStatisticTree<T, CompareFunction>::MoveRedLeft(Node* rt) {
+OrderStatisticTree<T, CompareFunction>::MoveRedLeft(Node* rt) {
+  ColorFlip(rt);
+  if (IsRed(rt->r_->l_)) {
+    rt->r_ = RotateRight(rt->r_);
+    rt = RotateLeft(rt);
     ColorFlip(rt);
-    if (IsRed(rt->r_->l_)) {
-      rt->r_ = RotateRight(rt->r_);
-      rt = RotateLeft(rt);
-      ColorFlip(rt);
-    }
-    return rt;
+  }
+  return rt;
 }
 
 template<typename T, bool (*CompareFunction)(const T&, const T&)>
 typename OrderStatisticTree<T, CompareFunction>::Node*
-  OrderStatisticTree<T, CompareFunction>::MoveRedRight(Node* rt) {
+OrderStatisticTree<T, CompareFunction>::MoveRedRight(Node* rt) {
+  ColorFlip(rt);
+  if (IsRed(rt->l_->l_)) {
+    rt = RotateRight(rt);
     ColorFlip(rt);
-    if (IsRed(rt->l_->l_)) {
-      rt = RotateRight(rt);
-      ColorFlip(rt);
-    }
-    return rt;
+  }
+  return rt;
 }
 
 template<typename T, bool (*CompareFunction)(const T&, const T&)>
 typename OrderStatisticTree<T, CompareFunction>::Node*
-  OrderStatisticTree<T, CompareFunction>::DeleteMin(Node* rt) {
-    if (rt->l_ == nullptr) return DeleteNode(rt);
+OrderStatisticTree<T, CompareFunction>::DeleteMin(Node* rt) {
+  if (rt->l_ == nullptr) return DeleteNode(rt);
 
-    --(rt->n);
+  --(rt->n);
+  if (!IsRed(rt->l_) && !IsRed(rt->l_->l_)) {
+    rt = MoveRedLeft(rt);
+  }
+  rt->l_ = DeleteMin(rt->l_);
+  return FixUp(rt);
+}
+
+template<typename T, bool (*CompareFunction)(const T&, const T&)>
+typename OrderStatisticTree<T, CompareFunction>::Node*
+OrderStatisticTree<T, CompareFunction>::Insert(const T& x, Node* rt) {
+  if (rt == nullptr) return CreateNode(x);
+
+  if (CompareFunction(x, rt->val)) {
+    rt->l_ = Insert(x, (rt->l_));
+    ++(rt->n);
+  } else if (CompareFunction(rt->val, x)) {
+    rt->r_ = Insert(x, (rt->r_));
+    ++(rt->n);
+  } // equal value skipped
+
+  return FixUp(rt);
+}
+
+template<typename T, bool (*CompareFunction)(const T&, const T&)>
+typename OrderStatisticTree<T, CompareFunction>::Node*
+OrderStatisticTree<T, CompareFunction>::Delete(const T& x, Node* rt) {
+  --(rt->n);
+  if (CompareFunction(x, rt->val)) {
     if (!IsRed(rt->l_) && !IsRed(rt->l_->l_)) {
       rt = MoveRedLeft(rt);
     }
-    rt->l_ = DeleteMin(rt->l_);
-    return FixUp(rt);
-}
-
-template<typename T, bool (*CompareFunction)(const T&, const T&)>
-typename OrderStatisticTree<T, CompareFunction>::Node*
-  OrderStatisticTree<T, CompareFunction>::Insert(const T& x, Node* rt) {
-    if (rt == nullptr) return CreateNode(x);
-
-    if (CompareFunction(x, rt->val)) {
-      rt->l_ = Insert(x, (rt->l_));
-      ++(rt->n);
-    } else if (CompareFunction(rt->val, x)) {
-      rt->r_ = Insert(x, (rt->r_));
-      ++(rt->n);
-    } // equal value skipped
-
-    return FixUp(rt);
-}
-
-template<typename T, bool (*CompareFunction)(const T&, const T&)>
-typename OrderStatisticTree<T, CompareFunction>::Node*
-  OrderStatisticTree<T, CompareFunction>::Delete(const T& x, Node* rt) {
-    --(rt->n);
-    if (CompareFunction(x, rt->val)) {
-      if (!IsRed(rt->l_) && !IsRed(rt->l_->l_)) {
-        rt = MoveRedLeft(rt);
-      }
-      rt->l_ = Delete(x, rt->l_);
-    } else  {
-      if (IsRed(rt->l_)) { rt = RotateRight(rt); }
-      if (rt->r_==nullptr &&
-        !CompareFunction(x, rt->val) && !CompareFunction(rt->val, x)) {
-          return DeleteNode(rt);
-      }
-      if (!IsRed(rt->r_) && !IsRed(rt->r_->l_)) {
-        rt = MoveRedRight(rt);
-      }
-      if (!CompareFunction(x, rt->val) && !CompareFunction(rt->val, x)) {
-        rt->val = GetMin(rt->r_);
-        rt->r_ = DeleteMin(rt->r_);
-      } else {
-        rt->r_ = Delete(x, rt->r_);
-      }
+    rt->l_ = Delete(x, rt->l_);
+  } else {
+    if (IsRed(rt->l_)) { rt = RotateRight(rt); }
+    if (rt->r_==nullptr &&
+      !CompareFunction(x, rt->val) && !CompareFunction(rt->val, x)) {
+        return DeleteNode(rt);
     }
-    return FixUp(rt);
+    if (!IsRed(rt->r_) && !IsRed(rt->r_->l_)) {
+      rt = MoveRedRight(rt);
+    }
+    if (!CompareFunction(x, rt->val) && !CompareFunction(rt->val, x)) {
+      rt->val = GetMin(rt->r_);
+      rt->r_ = DeleteMin(rt->r_);
+    } else {
+      rt->r_ = Delete(x, rt->r_);
+    }
+  }
+  return FixUp(rt);
 }
 
 template<typename T, bool (*CompareFunction)(const T&, const T&)>
@@ -180,11 +206,11 @@ T OrderStatisticTree<T, CompareFunction>::Select(int k, Node* rt) {
 
 template<typename T, bool (*CompareFunction)(const T&, const T&)>
 typename OrderStatisticTree<T, CompareFunction>::Node*
-  OrderStatisticTree<T, CompareFunction>::Clear(Node* rt) {
-    if (rt==nullptr) return nullptr;
-    rt->l_ = Clear(rt->l_);
-    rt->r_ = Clear(rt->r_);
-    return DeleteNode(rt);
+OrderStatisticTree<T, CompareFunction>::Clear(Node* rt) {
+  if (rt==nullptr) return nullptr;
+  rt->l_ = Clear(rt->l_);
+  rt->r_ = Clear(rt->r_);
+  return DeleteNode(rt);
 }
 
 #endif
