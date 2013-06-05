@@ -12,6 +12,16 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MoneyGambling", "MoneyGambl
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NewProject", "NewProject\NewProject.vcxproj", "{BCEA7C7A-6E6C-4F21-9FF2-7B5150CA7607}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MergeSortLinkedList", "MergeSortLinkedList\MergeSortLinkedList.vcxproj", "{9E7EC83C-E888-48BE-9508-414086648144}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FindLongestWindow", "FindLongestWindow\FindLongestWindow.vcxproj", "{41DC8169-7B17-4E9F-9890-528F7F857810}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JonnysToys", "JonnysToys\JonnysToys.vcxproj", "{78C770F0-436D-4910-AF7A-396F065EED13}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InsectTrio", "InsectTrio\InsectTrio.vcxproj", "{C24327BC-7FF0-473C-B849-3EC9ED89F197}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RacerRank", "RacerRank\RacerRank.vcxproj", "{B9710894-0CA0-49E8-84BB-A8649488FC7A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -30,6 +40,26 @@ Global
 		{BCEA7C7A-6E6C-4F21-9FF2-7B5150CA7607}.Debug|Win32.Build.0 = Debug|Win32
 		{BCEA7C7A-6E6C-4F21-9FF2-7B5150CA7607}.Release|Win32.ActiveCfg = Release|Win32
 		{BCEA7C7A-6E6C-4F21-9FF2-7B5150CA7607}.Release|Win32.Build.0 = Release|Win32
+		{9E7EC83C-E888-48BE-9508-414086648144}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9E7EC83C-E888-48BE-9508-414086648144}.Debug|Win32.Build.0 = Debug|Win32
+		{9E7EC83C-E888-48BE-9508-414086648144}.Release|Win32.ActiveCfg = Release|Win32
+		{9E7EC83C-E888-48BE-9508-414086648144}.Release|Win32.Build.0 = Release|Win32
+		{41DC8169-7B17-4E9F-9890-528F7F857810}.Debug|Win32.ActiveCfg = Debug|Win32
+		{41DC8169-7B17-4E9F-9890-528F7F857810}.Debug|Win32.Build.0 = Debug|Win32
+		{41DC8169-7B17-4E9F-9890-528F7F857810}.Release|Win32.ActiveCfg = Release|Win32
+		{41DC8169-7B17-4E9F-9890-528F7F857810}.Release|Win32.Build.0 = Release|Win32
+		{78C770F0-436D-4910-AF7A-396F065EED13}.Debug|Win32.ActiveCfg = Debug|Win32
+		{78C770F0-436D-4910-AF7A-396F065EED13}.Debug|Win32.Build.0 = Debug|Win32
+		{78C770F0-436D-4910-AF7A-396F065EED13}.Release|Win32.ActiveCfg = Release|Win32
+		{78C770F0-436D-4910-AF7A-396F065EED13}.Release|Win32.Build.0 = Release|Win32
+		{C24327BC-7FF0-473C-B849-3EC9ED89F197}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C24327BC-7FF0-473C-B849-3EC9ED89F197}.Debug|Win32.Build.0 = Debug|Win32
+		{C24327BC-7FF0-473C-B849-3EC9ED89F197}.Release|Win32.ActiveCfg = Release|Win32
+		{C24327BC-7FF0-473C-B849-3EC9ED89F197}.Release|Win32.Build.0 = Release|Win32
+		{B9710894-0CA0-49E8-84BB-A8649488FC7A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B9710894-0CA0-49E8-84BB-A8649488FC7A}.Debug|Win32.Build.0 = Debug|Win32
+		{B9710894-0CA0-49E8-84BB-A8649488FC7A}.Release|Win32.ActiveCfg = Release|Win32
+		{B9710894-0CA0-49E8-84BB-A8649488FC7A}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
